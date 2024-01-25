@@ -1,12 +1,9 @@
 package com.fjr619.jwtpostgresql
 
-import Greeting
 import SERVER_PORT
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.server.application.Application
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 
 fun main() {
     embeddedServer(Netty, port = SERVER_PORT, host = "127.0.0.1", module = Application::module)
@@ -14,9 +11,5 @@ fun main() {
 }
 
 fun Application.module() {
-    routing {
-        get("/") {
-            call.respondText("Ktor: ${Greeting().greet()}")
-        }
-    }
+    configureRouting()
 }
