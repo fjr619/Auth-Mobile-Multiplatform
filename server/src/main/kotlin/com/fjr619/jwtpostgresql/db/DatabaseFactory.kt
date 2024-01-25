@@ -2,6 +2,8 @@ package com.fjr619.jwtpostgresql.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -23,5 +25,11 @@ object DatabaseFactory {
         hikariConfig.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         hikariConfig.validate()
         return HikariDataSource(hikariConfig)
+    }
+
+    suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
+        transaction {
+            block()
+        }
     }
 }
