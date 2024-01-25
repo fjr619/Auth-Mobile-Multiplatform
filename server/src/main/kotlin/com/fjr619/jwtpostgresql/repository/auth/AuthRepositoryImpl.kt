@@ -9,22 +9,8 @@ class AuthRepositoryImpl(
     private val authService: AuthService,
 ) : AuthRepository {
     override suspend fun registeruser(params: CreateUserParams): BaseResponse<Any> {
-        return try {
-            if (isEmailExist(params.email)) {
-                BaseResponse.ErrorResponse(message = "Email already registered")
-            } else {
-                val user = authService.registerUser(params)
-                if (user != null) {
-                    //@TODO generate authentication token for the user
-                    BaseResponse.SuccessResponse(data = user)
-                } else {
-                    BaseResponse.ErrorResponse()
-                }
-            }
-        } catch (e: Exception) {
-            BaseResponse.ErrorResponse(message = e.message)
-        }
-
+        val user = authService.registerUser(params)
+        return BaseResponse.SuccessResponse(data = user)
     }
 
     override suspend fun loginUser(params: UserLoginParams): BaseResponse<Any> {
@@ -32,7 +18,7 @@ class AuthRepositoryImpl(
         return BaseResponse.SuccessResponse(data = user)
     }
 
-    private suspend fun isEmailExist(email: String): Boolean {
-        return authService.findUserByEmail(email = email) != null
-    }
+//    private suspend fun isEmailExist(email: String): Boolean {
+//        return authService.findUserByEmail(email = email) != null
+//    }
 }

@@ -8,12 +8,8 @@ import com.fjr619.jwtpostgresql.plugin.ValidationException
 import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
 import com.fjr619.jwtpostgresql.security.hash.HashingService
 import com.fjr619.jwtpostgresql.security.hash.SaltedHash
-import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SqlExpressionBuilder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
@@ -21,6 +17,12 @@ class AuthServiceImpl constructor(
     private val hashingService: HashingService
 ): AuthService {
     override suspend fun registerUser(params: CreateUserParams): User? {
+        val user = findUserByEmail(params.email)
+
+        if (user != null) {
+            throw ValidationException("Email already registered")
+        }
+
         var statement: InsertStatement<Number>? = null
         DatabaseFactory.dbQuery {
             val saltedHash = hashingService.generateSaltedHash(params.password)
@@ -32,7 +34,9 @@ class AuthServiceImpl constructor(
                 it[salt] = saltedHash.salt
             }
         }
+
         return rowToUser(statement?.resultedValues?.get(0))
+            ?: throw ParsingException("Error cant register")
     }
 
     override suspend fun loginUser(email: String, password: String): User? {
