@@ -2,7 +2,7 @@ package com.fjr619.jwtpostgresql.service.auth
 
 import com.fjr619.jwtpostgresql.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.db.UserTable
-import com.fjr619.jwtpostgresql.models.User
+import models.User
 import com.fjr619.jwtpostgresql.plugin.ParsingException
 import com.fjr619.jwtpostgresql.plugin.ValidationException
 import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams

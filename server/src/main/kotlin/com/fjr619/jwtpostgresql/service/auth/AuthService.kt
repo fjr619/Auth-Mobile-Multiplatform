@@ -1,7 +1,6 @@
 package com.fjr619.jwtpostgresql.service.auth
 
-import com.fjr619.jwtpostgresql.models.User
-import com.fjr619.jwtpostgresql.plugin.ParsingException
+import models.User
 import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
 import kotlin.jvm.Throws
 

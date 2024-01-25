@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.models
+package models
 
 data class User(
     val id: Int,
