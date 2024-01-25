@@ -4,6 +4,7 @@ import com.fjr619.jwtpostgresql.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.db.UserTable
 import com.fjr619.jwtpostgresql.models.User
 import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
+import com.fjr619.jwtpostgresql.security.hash.HashingService
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
@@ -13,26 +14,35 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
-class AuthServiceImpl: AuthService {
+class AuthServiceImpl constructor(
+    private val hashingService: HashingService
+): AuthService {
     override suspend fun registerUser(params: CreateUserParams): User? {
         var statement: InsertStatement<Number>? = null
         DatabaseFactory.dbQuery {
+            val saltedHash = hashingService.generateSaltedHash(params.password)
             statement = UserTable.insert {
                 it[email] = params.email
-                it[password] = params.password //@TODO, we need to encrypt the password
+                it[password] = saltedHash.hash
                 it[fullName] = params.fullName
                 it[avatar] = params.avatar
+                it[salt] = saltedHash.salt
             }
         }
         return rowToUser(statement?.resultedValues?.get(0))
     }
 
     override suspend fun findUserByEmail(email: String): User? {
-        val user = DatabaseFactory.dbQuery {
-            UserTable.selectAll().where { UserTable.email.eq(email) }.map {
-                rowToUser(it)
-            }.singleOrNull()
+        val user = try {
+            DatabaseFactory.dbQuery {
+                UserTable.selectAll().where { UserTable.email.eq(email) }.map {
+                    rowToUser(it)
+                }.singleOrNull()
+            }
+        } catch (e: Exception) {
+            throw e
         }
+
         return user
     }
 
@@ -43,6 +53,7 @@ class AuthServiceImpl: AuthService {
             fullName = row[UserTable.fullName],
             avatar = row[UserTable.avatar],
             email = row[UserTable.email],
+            salt = row[UserTable.salt],
             createdAt = row[UserTable.createdAt].toString()
         )
     }

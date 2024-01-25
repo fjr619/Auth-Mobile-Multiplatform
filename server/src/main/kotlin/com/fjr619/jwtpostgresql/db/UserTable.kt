@@ -10,7 +10,9 @@ object UserTable : Table("users") {
     val avatar = text("avatar")
     val email = varchar("email", 256)
     val password = text("password")
+    val salt = text("salt").default("")
     val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
 
     override val primaryKey = PrimaryKey(id)
 }
+

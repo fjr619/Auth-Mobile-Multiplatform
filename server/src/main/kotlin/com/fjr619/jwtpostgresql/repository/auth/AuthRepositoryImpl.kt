@@ -5,19 +5,25 @@ import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
 import com.fjr619.jwtpostgresql.service.auth.AuthService
 
 class AuthRepositoryImpl(
-    private val authService: AuthService
-): AuthRepository {
+    private val authService: AuthService,
+) : AuthRepository {
     override suspend fun registeruser(params: CreateUserParams): BaseResponse<Any> {
-        return if (isEmailExist(params.email)) {
-            BaseResponse.ErrorResponse(message = "Email already registered")
-        } else {
-            val user = authService.registerUser(params)
-            if (user != null) {
-                BaseResponse.SuccessResponse(data = user)
+        return try {
+            if (isEmailExist(params.email)) {
+                BaseResponse.ErrorResponse(message = "Email already registered")
             } else {
-                BaseResponse.ErrorResponse()
+                val user = authService.registerUser(params)
+                if (user != null) {
+                    //@TODO generate authentication token for the user
+                    BaseResponse.SuccessResponse(data = user)
+                } else {
+                    BaseResponse.ErrorResponse()
+                }
             }
+        } catch (e: Exception) {
+            BaseResponse.ErrorResponse(message = e.message)
         }
+
     }
 
     override suspend fun loginUser(email: String, password: String): BaseResponse<Any> {

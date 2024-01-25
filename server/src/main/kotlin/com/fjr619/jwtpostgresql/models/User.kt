@@ -6,5 +6,6 @@ data class User(
     val avatar: String,
     val email: String,
     var authToken: String? = null,
+    var salt: String,
     val createdAt: String
 )
