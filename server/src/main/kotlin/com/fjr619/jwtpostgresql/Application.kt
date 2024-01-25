@@ -1,6 +1,7 @@
 package com.fjr619.jwtpostgresql
 
 import SERVER_PORT
+import com.fjr619.jwtpostgresql.db.DatabaseFactory
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -11,5 +12,6 @@ fun main() {
 }
 
 fun Application.module() {
+    DatabaseFactory.init()
     configureRouting()
 }
