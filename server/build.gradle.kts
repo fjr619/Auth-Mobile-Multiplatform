@@ -19,7 +19,7 @@ dependencies {
 
     implementation("io.ktor:ktor-server-content-negotiation:2.3.7")
     implementation("io.ktor:ktor-serialization-jackson:2.3.7")
-
+    implementation("io.ktor:ktor-server-status-pages:2.3.7")
     implementation("io.ktor:ktor-server-auth:2.3.7")
     implementation("io.ktor:ktor-server-auth-jwt:2.3.7")
     implementation("commons-codec:commons-codec:1.16.0")

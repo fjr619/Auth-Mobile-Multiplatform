@@ -2,6 +2,8 @@ package com.fjr619.jwtpostgresql
 
 import SERVER_PORT
 import com.fjr619.jwtpostgresql.db.DatabaseFactory
+import com.fjr619.jwtpostgresql.plugin.configureExceptions
+import com.fjr619.jwtpostgresql.plugin.configureSerialization
 import com.fjr619.jwtpostgresql.repository.auth.AuthRepositoryImpl
 import com.fjr619.jwtpostgresql.routes.auth.authRoutes
 import com.fjr619.jwtpostgresql.security.hash.SHA256HashingService
@@ -20,9 +22,8 @@ fun main() {
 
 fun Application.module() {
     DatabaseFactory.init()
-    install(ContentNegotiation) {
-        jackson()
-    }
+    configureSerialization()
+    configureExceptions()
 
     val hashingService = SHA256HashingService()
     val authService = AuthServiceImpl(hashingService)

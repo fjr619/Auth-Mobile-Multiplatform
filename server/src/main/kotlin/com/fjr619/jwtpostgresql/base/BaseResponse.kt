@@ -8,17 +8,18 @@ import java.lang.Exception
 
 
 sealed class BaseResponse<T>(
-    val statusCode: HttpStatusCode = HttpStatusCode.OK
+    open val statusCode: HttpStatusCode
 ) {
-    @JsonSerialize
+//    @JsonSerialize
     data class SuccessResponse<T>(
         val data: T?,
         val message: String? = null,
-    ) : BaseResponse<T>()
+        override val statusCode: HttpStatusCode = HttpStatusCode.OK
+    ) : BaseResponse<T>(statusCode)
 
     @JsonSerialize
     data class ErrorResponse<T>(
-        val exception: T? = null,
         val message: String? = null,
-    ) : BaseResponse<T>()
+        override val statusCode: HttpStatusCode = HttpStatusCode.BadRequest
+    ) : BaseResponse<T>(statusCode)
 }

@@ -3,8 +3,11 @@ package com.fjr619.jwtpostgresql.service.auth
 import com.fjr619.jwtpostgresql.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.db.UserTable
 import com.fjr619.jwtpostgresql.models.User
+import com.fjr619.jwtpostgresql.plugin.ParsingException
+import com.fjr619.jwtpostgresql.plugin.ValidationException
 import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
 import com.fjr619.jwtpostgresql.security.hash.HashingService
+import com.fjr619.jwtpostgresql.security.hash.SaltedHash
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SqlExpressionBuilder
@@ -32,6 +35,21 @@ class AuthServiceImpl constructor(
         return rowToUser(statement?.resultedValues?.get(0))
     }
 
+    override suspend fun loginUser(email: String, password: String): User? {
+        val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
+
+        val isValidPassword = hashingService.verify(
+            value = password,
+            saltedHash = SaltedHash(
+                hash = user.password,
+                salt = user.salt
+            )
+        )
+
+        if (!isValidPassword) throw ValidationException("Incorrect password")
+        return user
+    }
+
     override suspend fun findUserByEmail(email: String): User? {
         val user = try {
             DatabaseFactory.dbQuery {
@@ -40,7 +58,7 @@ class AuthServiceImpl constructor(
                 }.singleOrNull()
             }
         } catch (e: Exception) {
-            throw e
+            throw ParsingException(e.message!!)
         }
 
         return user
@@ -54,6 +72,7 @@ class AuthServiceImpl constructor(
             avatar = row[UserTable.avatar],
             email = row[UserTable.email],
             salt = row[UserTable.salt],
+            password = row[UserTable.password],
             createdAt = row[UserTable.createdAt].toString()
         )
     }
