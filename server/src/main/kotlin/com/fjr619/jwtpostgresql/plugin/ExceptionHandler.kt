@@ -31,6 +31,7 @@ fun Application.configureExceptions() {
         status(
             HttpStatusCode.InternalServerError,
             HttpStatusCode.BadGateway,
+            HttpStatusCode.Unauthorized
         ) { call, statusCode ->
             when(statusCode) {
                 HttpStatusCode.InternalServerError -> {
@@ -43,6 +44,12 @@ fun Application.configureExceptions() {
                     call.respond(
                         HttpStatusCode.BadGateway,
                         BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.BadGateway, message = "Oops! We got a bad gateway. Fixing it. Hold on!")
+                    )
+                }
+                HttpStatusCode.Unauthorized -> {
+                    call.respond(
+                        HttpStatusCode.Unauthorized,
+                        BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.BadGateway, message = "Oops! You must login first!")
                     )
                 }
             }

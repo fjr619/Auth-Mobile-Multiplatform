@@ -5,9 +5,9 @@ import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
 import kotlin.jvm.Throws
 
 interface AuthService {
-    suspend fun registerUser(params: CreateUserParams): User?
+    suspend fun registerUser(params: CreateUserParams): User
     @Throws(Exception::class)
-    suspend fun loginUser(email: String, password: String): User?
+    suspend fun loginUser(email: String, password: String): User
 
     @Throws(Exception::class)
     suspend fun findUserByEmail(email: String): User?

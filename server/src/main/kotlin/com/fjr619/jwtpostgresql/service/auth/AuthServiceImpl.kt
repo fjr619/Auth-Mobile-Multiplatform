@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 class AuthServiceImpl constructor(
     private val hashingService: HashingService
 ): AuthService {
-    override suspend fun registerUser(params: CreateUserParams): User? {
+    override suspend fun registerUser(params: CreateUserParams): User {
         val user = findUserByEmail(params.email)
 
         if (user != null) {
@@ -39,7 +39,7 @@ class AuthServiceImpl constructor(
             ?: throw ParsingException("Error cant register")
     }
 
-    override suspend fun loginUser(email: String, password: String): User? {
+    override suspend fun loginUser(email: String, password: String): User {
         val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
 
         val isValidPassword = hashingService.verify(
