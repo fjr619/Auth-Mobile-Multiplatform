@@ -22,7 +22,7 @@ fun Application.configureExceptions() {
                 is ParsingException -> {
                     call.respond(
                         HttpStatusCode.NotFound,
-                        BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.BadRequest, message = throwable.message)
+                        BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.NotFound, message = throwable.message)
                     )
                 }
             }
@@ -33,26 +33,38 @@ fun Application.configureExceptions() {
             HttpStatusCode.BadGateway,
             HttpStatusCode.Unauthorized
         ) { call, statusCode ->
-            when(statusCode) {
-                HttpStatusCode.InternalServerError -> {
-                    call.respond(
-                        HttpStatusCode.InternalServerError,
-                        BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.InternalServerError, message = "Oops! internal server error at our end")
-                    )
-                }
-                HttpStatusCode.BadGateway -> {
-                    call.respond(
-                        HttpStatusCode.BadGateway,
-                        BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.BadGateway, message = "Oops! We got a bad gateway. Fixing it. Hold on!")
-                    )
-                }
-                HttpStatusCode.Unauthorized -> {
-                    call.respond(
-                        HttpStatusCode.Unauthorized,
-                        BaseResponse.ErrorResponse<Any>(statusCode = HttpStatusCode.BadGateway, message = "Oops! You must login first!")
-                    )
-                }
-            }
+            call.respond(
+                statusCode,
+                BaseResponse.ErrorResponse<Any>(
+                    statusCode = statusCode,
+                    message = when (statusCode) {
+                        HttpStatusCode.InternalServerError -> "Oops! internal server error at our end"
+                        HttpStatusCode.BadGateway -> "Oops! We got a bad gateway. Fixing it. Hold on!"
+                        HttpStatusCode.Unauthorized -> "Oops! You must login first!"
+                        else -> ""
+                    }
+                )
+            )
+//            when(statusCode) {
+//                HttpStatusCode.InternalServerError -> {
+//                    call.respond(
+//                        statusCode,
+//                        BaseResponse.ErrorResponse<Any>(statusCode = statusCode, message = "Oops! internal server error at our end")
+//                    )
+//                }
+//                HttpStatusCode.BadGateway -> {
+//                    call.respond(
+//                        statusCode,
+//                        BaseResponse.ErrorResponse<Any>(statusCode = statusCode, message = "Oops! We got a bad gateway. Fixing it. Hold on!")
+//                    )
+//                }
+//                HttpStatusCode.Unauthorized -> {
+//                    call.respond(
+//                        statusCode,
+//                        BaseResponse.ErrorResponse<Any>(statusCode = statusCode, message = "Oops! You must login first!")
+//                    )
+//                }
+//            }
         }
     }
 }

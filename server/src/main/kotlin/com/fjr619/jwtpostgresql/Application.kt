@@ -7,6 +7,7 @@ import com.fjr619.jwtpostgresql.plugin.configureSecurity
 import com.fjr619.jwtpostgresql.plugin.configureSerialization
 import com.fjr619.jwtpostgresql.repository.auth.AuthRepositoryImpl
 import com.fjr619.jwtpostgresql.routes.auth.authRoutes
+import com.fjr619.jwtpostgresql.routes.user.userRoutes
 import com.fjr619.jwtpostgresql.security.hash.SHA256HashingService
 import com.fjr619.jwtpostgresql.security.token.JwtTokenService
 import com.fjr619.jwtpostgresql.security.token.TokenConfig
@@ -43,4 +44,5 @@ fun Application.module() {
     val authRepository = AuthRepositoryImpl(authService, tokenService, tokenConfig)
     configureSecurity(tokenService, tokenConfig)
     authRoutes(authRepository)
+    userRoutes()
 }
