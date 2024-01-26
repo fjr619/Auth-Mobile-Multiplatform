@@ -10,7 +10,7 @@ import java.lang.Exception
 sealed class BaseResponse<T>(
     open val statusCode: HttpStatusCode
 ) {
-//    @JsonSerialize
+    @JsonSerialize
     data class SuccessResponse<T>(
         val data: T?,
         val message: String? = null,
