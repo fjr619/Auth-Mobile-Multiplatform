@@ -11,17 +11,33 @@ import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
 import org.koin.core.annotation.Singleton
 
+
+/**
+ * Auth Service to our User
+ * Define the CRUD operations of our application with our Users
+ * @property authRepository AuthRepository
+ * @property tokenService TokenService
+ * @property tokenConfig TokenConfig
+ */
 @Singleton
 class AuthServiceImpl(
     private val authRepository: AuthRepository,
     private val tokenService: TokenService,
     private val tokenConfig: TokenConfig
 ) : AuthService {
+
+    /**
+     * Register User
+     */
     override suspend fun registeruser(params: UserRegisterParams): BaseResponse<User> {
         val user = authRepository.registerUser(params).toModel()
         user.authToken = user.generateToken()
         return BaseResponse.SuccessResponse(data = user)
     }
+
+    /**
+     * Login User
+     */
 
     override suspend fun loginUser(params: UserLoginParams): BaseResponse<User> {
         val user = authRepository.loginUser(params.email, params.password).toModel()
@@ -29,6 +45,9 @@ class AuthServiceImpl(
         return BaseResponse.SuccessResponse(data = user)
     }
 
+    /**
+     * Generate Token
+     */
     private fun User.generateToken(): String {
         return tokenService.generate(
             config = tokenConfig,

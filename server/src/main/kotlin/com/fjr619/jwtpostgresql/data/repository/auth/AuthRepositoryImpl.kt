@@ -15,11 +15,23 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.koin.core.annotation.Singleton
 
+/**
+ * Auth Repository
+ * @property dataBaseService Database service
+ * @property hashingService Hashing service
+ */
+
 @Singleton
 class AuthRepositoryImpl constructor(
     private val hashingService: HashingService,
     private val databaseFactory: DatabaseFactory
 ): AuthRepository {
+
+    /**
+     * Register user
+     * @param params User register params
+     * @return User Entity
+     */
     override suspend fun registerUser(params: UserRegisterParams): UserEntity {
         val user = findUserByEmail(params.email)
 
@@ -43,6 +55,12 @@ class AuthRepositoryImpl constructor(
             ?: throw ParsingException("Error cant register")
     }
 
+    /**
+     * Login User
+     * @param email Email
+     * @param password Password
+     * @return User Entity
+     */
     override suspend fun loginUser(email: String, password: String): UserEntity {
         val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
 
@@ -58,6 +76,11 @@ class AuthRepositoryImpl constructor(
         return user
     }
 
+    /**
+     * Find User By Email
+     * @param email Email
+     * @return User Entity nullable
+     */
     override suspend fun findUserByEmail(email: String): UserEntity? {
         val user = try {
             databaseFactory.dbQuery {
@@ -72,6 +95,11 @@ class AuthRepositoryImpl constructor(
         return user
     }
 
+    /**
+     * Convert result to User Entity
+     * @param row Result Row nullable
+     * @return User Entity nullable
+     */
     private fun rowToUserEntity(row: ResultRow?): UserEntity? {
         return if (row == null) null
         else UserEntity(

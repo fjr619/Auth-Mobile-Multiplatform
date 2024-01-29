@@ -13,8 +13,10 @@ import com.fjr619.jwtpostgresql.domain.service.security.hash.SHA256HashingServic
 import com.fjr619.jwtpostgresql.domain.service.security.token.JwtTokenService
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
+import com.fjr619.jwtpostgresql.presentation.plugin.configureCors
 import com.fjr619.jwtpostgresql.presentation.plugin.configureKoin
 import com.fjr619.jwtpostgresql.presentation.plugin.configureRouting
+import com.fjr619.jwtpostgresql.presentation.plugin.configureSwagger
 import com.fjr619.jwtpostgresql.presentation.plugin.configureValidation
 import io.ktor.server.application.Application
 import io.ktor.server.netty.EngineMain
@@ -32,5 +34,7 @@ fun Application.module() {
     configureExceptions()
     configureSecurity()
     configureValidation()
+    configureCors()
+    configureSwagger()
     configureRouting()
 }

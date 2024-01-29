@@ -10,6 +10,11 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.annotation.Singleton
 
+/**
+ * DataBase Factory to connect to our database
+ * @property appConfig AppConfig Configuration of our service
+ */
+
 @Singleton
 class DatabaseFactory(
     private val appConfig: AppConfig
