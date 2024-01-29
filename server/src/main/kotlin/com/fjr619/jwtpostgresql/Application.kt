@@ -14,6 +14,7 @@ import com.fjr619.jwtpostgresql.domain.service.security.token.JwtTokenService
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.presentation.plugin.configureKoin
+import com.fjr619.jwtpostgresql.presentation.plugin.configureRouting
 import io.ktor.server.application.Application
 import io.ktor.server.netty.EngineMain
 
@@ -29,7 +30,5 @@ fun Application.module() {
     configureSerialization()
     configureExceptions()
     configureSecurity()
-
-    authRoutes()
-    userRoutes()
+    configureRouting()
 }

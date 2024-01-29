@@ -14,6 +14,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.modules.SerializersModule
 
+/**
+ * Configure the serialization of our application based on JSON
+ */
 fun Application.configureSerialization() {
     install(ContentNegotiation) {
 //        jackson {

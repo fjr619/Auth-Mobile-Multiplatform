@@ -10,6 +10,11 @@ import io.ktor.server.response.respond
 class ValidationException(override val message: String) : Throwable()
 class ParsingException(override val message: String) : Throwable()
 
+/**
+ * Configure the Status Pages plugin and configure it
+ * https://ktor.io/docs/status-pages.html
+ * We use status pages to respond with expected exceptions
+ */
 fun Application.configureExceptions() {
     install(StatusPages) {
         exception<Throwable> { call, throwable ->

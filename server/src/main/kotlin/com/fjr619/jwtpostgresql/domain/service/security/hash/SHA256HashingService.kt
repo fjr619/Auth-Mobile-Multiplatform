@@ -5,6 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.koin.core.annotation.Singleton
 import java.security.SecureRandom
 
+//https://www.youtube.com/watch?v=uezSuUQt6DY&t=8s
 @Singleton
 class SHA256HashingService: HashingService {
     override fun generateSaltedHash(value: String, saltLength: Int): SaltedHash {

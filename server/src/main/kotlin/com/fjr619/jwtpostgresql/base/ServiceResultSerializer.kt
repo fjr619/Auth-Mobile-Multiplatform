@@ -14,6 +14,7 @@ import mu.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 
+//https://stackoverflow.com/a/71860558
 class ServiceResultSerializer<T : Any>(
     tSerializer: KSerializer<T>
 ) : KSerializer<BaseResponse<T>> {
