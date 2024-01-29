@@ -1,11 +1,15 @@
 package com.fjr619.jwtpostgresql.domain.repository.auth
 
-import com.fjr619.jwtpostgresql.base.BaseResponse
-import com.fjr619.jwtpostgresql.domain.model.User
+import com.fjr619.jwtpostgresql.data.db.UserEntity
 import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
-import com.fjr619.jwtpostgresql.domain.model.params.UserLoginParams
+import kotlin.jvm.Throws
 
 interface AuthRepository {
-    suspend fun registeruser(params: CreateUserParams): BaseResponse<User>
-    suspend fun loginUser(params: UserLoginParams): BaseResponse<User>
+    suspend fun registerUser(params: CreateUserParams): UserEntity
+    @Throws(Exception::class)
+    suspend fun loginUser(email: String, password: String): UserEntity
+
+    @Throws(Exception::class)
+    suspend fun findUserByEmail(email: String): UserEntity?
+
 }

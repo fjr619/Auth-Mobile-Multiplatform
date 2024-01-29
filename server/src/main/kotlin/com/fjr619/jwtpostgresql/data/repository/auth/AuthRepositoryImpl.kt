@@ -1,49 +1,84 @@
 package com.fjr619.jwtpostgresql.data.repository.auth
 
-import com.fjr619.jwtpostgresql.base.BaseResponse
-import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
+import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
+import com.fjr619.jwtpostgresql.data.db.UserTable
+import com.fjr619.jwtpostgresql.presentation.plugin.ParsingException
+import com.fjr619.jwtpostgresql.presentation.plugin.ValidationException
 import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
-import com.fjr619.jwtpostgresql.domain.model.params.UserLoginParams
-import com.fjr619.jwtpostgresql.domain.security.token.TokenClaim
-import com.fjr619.jwtpostgresql.domain.security.token.TokenConfig
-import com.fjr619.jwtpostgresql.domain.security.token.TokenService
-import com.fjr619.jwtpostgresql.data.mapper.toModel
-import com.fjr619.jwtpostgresql.data.service.auth.AuthService
-import com.fjr619.jwtpostgresql.domain.model.User
-class AuthRepositoryImpl(
-    private val authService: AuthService,
-    private val tokenService: TokenService,
-    private val tokenConfig: TokenConfig
-) : AuthRepository {
-    override suspend fun registeruser(params: CreateUserParams): BaseResponse<User> {
-        val user = authService.registerUser(params).toModel()
-        user.authToken = user.generateToken()
-        return BaseResponse.SuccessResponse(data = user)
+import com.fjr619.jwtpostgresql.domain.security.hash.HashingService
+import com.fjr619.jwtpostgresql.domain.security.hash.SaltedHash
+import com.fjr619.jwtpostgresql.data.db.UserEntity
+import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.statements.InsertStatement
+
+class AuthRepositoryImpl constructor(
+    private val hashingService: HashingService
+): AuthRepository {
+    override suspend fun registerUser(params: CreateUserParams): UserEntity {
+        val user = findUserByEmail(params.email)
+
+        if (user != null) {
+            throw ValidationException("Email already registered")
+        }
+
+        var statement: InsertStatement<Number>? = null
+        DatabaseFactory.dbQuery {
+            val saltedHash = hashingService.generateSaltedHash(params.password)
+            statement = UserTable.insert {
+                it[email] = params.email
+                it[password] = saltedHash.hash
+                it[fullName] = params.fullName
+                it[avatar] = params.avatar
+                it[salt] = saltedHash.salt
+            }
+        }
+
+        return rowToUserEntity(statement?.resultedValues?.get(0))
+            ?: throw ParsingException("Error cant register")
     }
 
-    override suspend fun loginUser(params: UserLoginParams): BaseResponse<User> {
-        val user = authService.loginUser(params.email, params.password).toModel()
-        user.authToken = user.generateToken()
-        return BaseResponse.SuccessResponse(data = user)
-    }
+    override suspend fun loginUser(email: String, password: String): UserEntity {
+        val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
 
-    private fun User.generateToken(): String {
-        return tokenService.generate(
-            config = tokenConfig,
-            claims = arrayOf(
-                TokenClaim(
-                    name = "userId",
-                    value = this.id.toString()
-                ),
-                TokenClaim(
-                    name = "email",
-                    value = this.email
-                )
+        val isValidPassword = hashingService.verify(
+            value = password,
+            saltedHash = SaltedHash(
+                hash = user.password,
+                salt = user.salt
             )
         )
+
+        if (!isValidPassword) throw ValidationException("Incorrect password")
+        return user
     }
 
-//    private suspend fun isEmailExist(email: String): Boolean {
-//        return authService.findUserByEmail(email = email) != null
-//    }
+    override suspend fun findUserByEmail(email: String): UserEntity? {
+        val user = try {
+            DatabaseFactory.dbQuery {
+                UserTable.selectAll().where { UserTable.email.eq(email) }.map {
+                    rowToUserEntity(it)
+                }.singleOrNull()
+            }
+        } catch (e: Exception) {
+            throw ParsingException(e.message!!)
+        }
+
+        return user
+    }
+
+    private fun rowToUserEntity(row: ResultRow?): UserEntity? {
+        return if (row == null) null
+        else UserEntity(
+            id = row[UserTable.id],
+            fullName = row[UserTable.fullName],
+            avatar = row[UserTable.avatar],
+            email = row[UserTable.email],
+            salt = row[UserTable.salt],
+            password = row[UserTable.password],
+            createdAt = row[UserTable.createdAt].toString()
+        )
+    }
 }
