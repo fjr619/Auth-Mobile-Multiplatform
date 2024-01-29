@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.routes.auth
 
-import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
+import com.fjr619.jwtpostgresql.domain.model.params.UserRegisterParams
 import com.fjr619.jwtpostgresql.domain.model.params.UserLoginParams
 import com.fjr619.jwtpostgresql.domain.service.auth.AuthService
 import io.ktor.server.application.Application
@@ -19,7 +19,7 @@ fun Application.authRoutes() {
     routing {
         route("/auth") {
             post("/register") {
-                val params = call.receive<CreateUserParams>()
+                val params = call.receive<UserRegisterParams>()
                 val result = authService.registeruser(params)
                 call.respond(result.statusCode, result)
             }

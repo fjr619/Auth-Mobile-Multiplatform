@@ -1,7 +1,7 @@
 package com.fjr619.jwtpostgresql.domain.service.auth
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
-import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
+import com.fjr619.jwtpostgresql.domain.model.params.UserRegisterParams
 import com.fjr619.jwtpostgresql.domain.model.params.UserLoginParams
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenClaim
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
@@ -17,7 +17,7 @@ class AuthServiceImpl(
     private val tokenService: TokenService,
     private val tokenConfig: TokenConfig
 ) : AuthService {
-    override suspend fun registeruser(params: CreateUserParams): BaseResponse<User> {
+    override suspend fun registeruser(params: UserRegisterParams): BaseResponse<User> {
         val user = authRepository.registerUser(params).toModel()
         user.authToken = user.generateToken()
         return BaseResponse.SuccessResponse(data = user)

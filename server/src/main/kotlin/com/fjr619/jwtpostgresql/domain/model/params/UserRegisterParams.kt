@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class CreateUserParams(
+data class UserRegisterParams(
     val fullName: String,
     val email: String,
     val password: String,

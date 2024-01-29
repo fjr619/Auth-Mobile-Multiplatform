@@ -4,7 +4,7 @@ import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.data.db.UserTable
 import com.fjr619.jwtpostgresql.presentation.plugin.ParsingException
 import com.fjr619.jwtpostgresql.presentation.plugin.ValidationException
-import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
+import com.fjr619.jwtpostgresql.domain.model.params.UserRegisterParams
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash
 import com.fjr619.jwtpostgresql.data.db.UserEntity
@@ -20,7 +20,7 @@ class AuthRepositoryImpl constructor(
     private val hashingService: HashingService,
     private val databaseFactory: DatabaseFactory
 ): AuthRepository {
-    override suspend fun registerUser(params: CreateUserParams): UserEntity {
+    override suspend fun registerUser(params: UserRegisterParams): UserEntity {
         val user = findUserByEmail(params.email)
 
         if (user != null) {

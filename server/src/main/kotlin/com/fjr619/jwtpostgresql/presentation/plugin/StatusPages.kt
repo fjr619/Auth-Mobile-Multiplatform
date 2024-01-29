@@ -4,6 +4,7 @@ import com.fjr619.jwtpostgresql.base.BaseResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 
@@ -19,12 +20,12 @@ fun Application.configureExceptions() {
     install(StatusPages) {
         exception<Throwable> { call, throwable ->
             when (throwable) {
-                is ValidationException -> {
+                is ValidationException, is RequestValidationException -> {
                     call.respond(
                         HttpStatusCode.BadRequest,
                         BaseResponse.ErrorResponse(
                             statusCode = HttpStatusCode.BadRequest,
-                            message = "Validation : ${throwable.message}") as BaseResponse<Nothing>
+                            message = throwable.message) as BaseResponse<Nothing>
                     )
                 }
 
@@ -33,10 +34,18 @@ fun Application.configureExceptions() {
                         HttpStatusCode.NotFound,
                         BaseResponse.ErrorResponse(
                             statusCode = HttpStatusCode.NotFound,
-                            message = "Validation : ${throwable.message}") as BaseResponse<Nothing>
+                            message = throwable.message) as BaseResponse<Nothing>
                     )
                 }
             }
+        }
+
+        // This is a custom exception we use to respond with a 400 if a validation fails, Bad Request
+        exception<RequestValidationException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.BadRequest,
+                message = cause.reasons.joinToString()
+            ) as BaseResponse<Nothing>)
         }
 
         status(

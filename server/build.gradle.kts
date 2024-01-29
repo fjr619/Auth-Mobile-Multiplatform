@@ -35,6 +35,7 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
     implementation ("io.insert-koin:koin-ktor:3.5.3")
     implementation ("io.insert-koin:koin-logger-slf4j:3.5.3")
+    implementation("io.ktor:ktor-server-request-validation:2.3.7")
 
     // Koin for Dependency Injection
     implementation("io.insert-koin:koin-annotations:1.3.0") // Koin Annotations for KSP
