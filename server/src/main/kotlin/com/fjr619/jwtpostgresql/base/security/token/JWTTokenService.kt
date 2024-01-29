@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.security.token
+package com.fjr619.jwtpostgresql.base.security.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier

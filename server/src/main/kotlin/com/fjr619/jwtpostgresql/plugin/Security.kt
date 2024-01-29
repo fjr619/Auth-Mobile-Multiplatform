@@ -1,7 +1,7 @@
 package com.fjr619.jwtpostgresql.plugin
 
-import com.fjr619.jwtpostgresql.security.token.TokenConfig
-import com.fjr619.jwtpostgresql.security.token.TokenService
+import com.fjr619.jwtpostgresql.base.security.token.TokenConfig
+import com.fjr619.jwtpostgresql.base.security.token.TokenService
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authentication

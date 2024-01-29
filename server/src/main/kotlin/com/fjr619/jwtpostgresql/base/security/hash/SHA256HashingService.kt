@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.security.hash
+package com.fjr619.jwtpostgresql.base.security.hash
 
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils

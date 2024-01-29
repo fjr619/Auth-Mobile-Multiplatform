@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.security.token
+package com.fjr619.jwtpostgresql.base.security.token
 
 data class TokenConfig(
     val issuer: String,

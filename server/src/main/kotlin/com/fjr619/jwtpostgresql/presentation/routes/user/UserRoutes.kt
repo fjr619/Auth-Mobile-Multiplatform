@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.routes.user
+package com.fjr619.jwtpostgresql.presentation.routes.user
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import io.ktor.http.HttpStatusCode

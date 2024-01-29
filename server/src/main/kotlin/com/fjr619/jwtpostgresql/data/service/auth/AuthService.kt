@@ -1,7 +1,7 @@
-package com.fjr619.jwtpostgresql.service.auth
+package com.fjr619.jwtpostgresql.data.service.auth
 
 import models.User
-import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
+import com.fjr619.jwtpostgresql.presentation.routes.auth.CreateUserParams
 import kotlin.jvm.Throws
 
 interface AuthService {

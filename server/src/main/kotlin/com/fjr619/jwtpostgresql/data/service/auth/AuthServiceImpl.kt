@@ -1,13 +1,13 @@
-package com.fjr619.jwtpostgresql.service.auth
+package com.fjr619.jwtpostgresql.data.service.auth
 
-import com.fjr619.jwtpostgresql.db.DatabaseFactory
-import com.fjr619.jwtpostgresql.db.UserTable
+import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
+import com.fjr619.jwtpostgresql.data.db.UserTable
 import models.User
 import com.fjr619.jwtpostgresql.plugin.ParsingException
 import com.fjr619.jwtpostgresql.plugin.ValidationException
-import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
-import com.fjr619.jwtpostgresql.security.hash.HashingService
-import com.fjr619.jwtpostgresql.security.hash.SaltedHash
+import com.fjr619.jwtpostgresql.presentation.routes.auth.CreateUserParams
+import com.fjr619.jwtpostgresql.base.security.hash.HashingService
+import com.fjr619.jwtpostgresql.base.security.hash.SaltedHash
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll

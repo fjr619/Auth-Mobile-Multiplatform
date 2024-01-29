@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.security.hash
+package com.fjr619.jwtpostgresql.base.security.hash
 
 data class SaltedHash(
     val hash: String,

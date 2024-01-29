@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.db
+package com.fjr619.jwtpostgresql.data.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource

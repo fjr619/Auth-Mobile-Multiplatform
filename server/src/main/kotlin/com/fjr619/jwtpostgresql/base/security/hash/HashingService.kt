@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.security.hash
+package com.fjr619.jwtpostgresql.base.security.hash
 
 interface HashingService {
     fun generateSaltedHash(value: String, saltLength: Int = 12): SaltedHash

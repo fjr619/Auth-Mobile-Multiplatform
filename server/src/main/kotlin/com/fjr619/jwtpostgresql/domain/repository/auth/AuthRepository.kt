@@ -1,8 +1,8 @@
-package com.fjr619.jwtpostgresql.repository.auth
+package com.fjr619.jwtpostgresql.domain.repository.auth
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
-import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
-import com.fjr619.jwtpostgresql.routes.auth.UserLoginParams
+import com.fjr619.jwtpostgresql.presentation.routes.auth.CreateUserParams
+import com.fjr619.jwtpostgresql.presentation.routes.auth.UserLoginParams
 import models.User
 
 interface AuthRepository {

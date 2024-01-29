@@ -1,12 +1,13 @@
-package com.fjr619.jwtpostgresql.repository.auth
+package com.fjr619.jwtpostgresql.data.repository.auth
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
-import com.fjr619.jwtpostgresql.routes.auth.CreateUserParams
-import com.fjr619.jwtpostgresql.routes.auth.UserLoginParams
-import com.fjr619.jwtpostgresql.security.token.TokenClaim
-import com.fjr619.jwtpostgresql.security.token.TokenConfig
-import com.fjr619.jwtpostgresql.security.token.TokenService
-import com.fjr619.jwtpostgresql.service.auth.AuthService
+import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
+import com.fjr619.jwtpostgresql.presentation.routes.auth.CreateUserParams
+import com.fjr619.jwtpostgresql.presentation.routes.auth.UserLoginParams
+import com.fjr619.jwtpostgresql.base.security.token.TokenClaim
+import com.fjr619.jwtpostgresql.base.security.token.TokenConfig
+import com.fjr619.jwtpostgresql.base.security.token.TokenService
+import com.fjr619.jwtpostgresql.data.service.auth.AuthService
 import models.User
 
 class AuthRepositoryImpl(
