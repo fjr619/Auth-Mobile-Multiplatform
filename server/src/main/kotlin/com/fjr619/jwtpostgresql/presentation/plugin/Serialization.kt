@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.plugin
+package com.fjr619.jwtpostgresql.presentation.plugin
 
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter

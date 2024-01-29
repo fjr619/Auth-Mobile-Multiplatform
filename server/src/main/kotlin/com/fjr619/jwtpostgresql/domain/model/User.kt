@@ -1,7 +1,6 @@
-package models
+package com.fjr619.jwtpostgresql.domain.model
 
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 data class User(
@@ -9,8 +8,5 @@ data class User(
     val fullName: String,
     val avatar: String,
     val email: String,
-    val password: String,
     var authToken: String? = null,
-    var salt: String,
-    val createdAt: String
 )

@@ -16,3 +16,12 @@ object UserTable : Table("users") {
     override val primaryKey = PrimaryKey(id)
 }
 
+data class UserEntity(
+    val id: Int,
+    val fullName: String,
+    val avatar: String,
+    val email: String,
+    val password: String,
+    val salt: String,
+    val createdAt: String
+)

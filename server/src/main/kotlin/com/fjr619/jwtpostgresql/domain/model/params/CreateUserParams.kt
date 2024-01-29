@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.presentation.routes.auth
+package com.fjr619.jwtpostgresql.domain.model.params
 
 import kotlinx.serialization.Serializable
 

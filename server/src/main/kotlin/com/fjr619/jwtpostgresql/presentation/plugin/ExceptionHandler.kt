@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.plugin
+package com.fjr619.jwtpostgresql.presentation.plugin
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import io.ktor.http.HttpStatusCode

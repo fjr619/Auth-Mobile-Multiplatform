@@ -1,5 +1,7 @@
 package com.fjr619.jwtpostgresql.presentation.routes.auth
 
+import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
+import com.fjr619.jwtpostgresql.domain.model.params.UserLoginParams
 import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
 import io.ktor.server.application.Application
 import io.ktor.server.application.call

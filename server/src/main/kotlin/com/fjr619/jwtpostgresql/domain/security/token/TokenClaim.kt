@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.base.security.token
+package com.fjr619.jwtpostgresql.domain.security.token
 
 data class TokenClaim(
     val name: String,

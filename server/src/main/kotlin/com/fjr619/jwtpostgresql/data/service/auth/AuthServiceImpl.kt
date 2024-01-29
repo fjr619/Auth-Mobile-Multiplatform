@@ -2,12 +2,12 @@ package com.fjr619.jwtpostgresql.data.service.auth
 
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.data.db.UserTable
-import models.User
-import com.fjr619.jwtpostgresql.plugin.ParsingException
-import com.fjr619.jwtpostgresql.plugin.ValidationException
-import com.fjr619.jwtpostgresql.presentation.routes.auth.CreateUserParams
-import com.fjr619.jwtpostgresql.base.security.hash.HashingService
-import com.fjr619.jwtpostgresql.base.security.hash.SaltedHash
+import com.fjr619.jwtpostgresql.presentation.plugin.ParsingException
+import com.fjr619.jwtpostgresql.presentation.plugin.ValidationException
+import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
+import com.fjr619.jwtpostgresql.domain.security.hash.HashingService
+import com.fjr619.jwtpostgresql.domain.security.hash.SaltedHash
+import com.fjr619.jwtpostgresql.data.db.UserEntity
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.statements.InsertStatement
 class AuthServiceImpl constructor(
     private val hashingService: HashingService
 ): AuthService {
-    override suspend fun registerUser(params: CreateUserParams): User {
+    override suspend fun registerUser(params: CreateUserParams): UserEntity {
         val user = findUserByEmail(params.email)
 
         if (user != null) {
@@ -35,11 +35,11 @@ class AuthServiceImpl constructor(
             }
         }
 
-        return rowToUser(statement?.resultedValues?.get(0))
+        return rowToUserEntity(statement?.resultedValues?.get(0))
             ?: throw ParsingException("Error cant register")
     }
 
-    override suspend fun loginUser(email: String, password: String): User {
+    override suspend fun loginUser(email: String, password: String): UserEntity {
         val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
 
         val isValidPassword = hashingService.verify(
@@ -54,11 +54,11 @@ class AuthServiceImpl constructor(
         return user
     }
 
-    override suspend fun findUserByEmail(email: String): User? {
+    override suspend fun findUserByEmail(email: String): UserEntity? {
         val user = try {
             DatabaseFactory.dbQuery {
                 UserTable.selectAll().where { UserTable.email.eq(email) }.map {
-                    rowToUser(it)
+                    rowToUserEntity(it)
                 }.singleOrNull()
             }
         } catch (e: Exception) {
@@ -68,9 +68,9 @@ class AuthServiceImpl constructor(
         return user
     }
 
-    private fun rowToUser(row: ResultRow?): User? {
+    private fun rowToUserEntity(row: ResultRow?): UserEntity? {
         return if (row == null) null
-        else User(
+        else UserEntity(
             id = row[UserTable.id],
             fullName = row[UserTable.fullName],
             avatar = row[UserTable.avatar],
