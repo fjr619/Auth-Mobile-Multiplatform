@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.serialization.jackson)
+    implementation(libs.ktor.serialization.kotlinx)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
@@ -30,6 +31,7 @@ dependencies {
     implementation(libs.postgresql)
     implementation(libs.hikari)
     implementation(libs.kotlinx.serialization)
+    implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 
     testImplementation(libs.ktor.server.tests)
     testImplementation(libs.kotlin.test.junit)

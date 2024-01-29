@@ -15,7 +15,9 @@ fun Application.userRoutes() {
         authenticate {
             route("/user") {
                 get {
-                    call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse("", message = "user api"))
+                    call.respond(HttpStatusCode.OK,
+                        BaseResponse.SuccessResponse("api user") as BaseResponse<String>
+                    )
                 }
             }
         }
