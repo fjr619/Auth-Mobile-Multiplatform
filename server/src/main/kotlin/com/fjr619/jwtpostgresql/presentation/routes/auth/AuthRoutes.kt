@@ -10,19 +10,23 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import org.koin.ktor.ext.inject
 
-fun Application.authRoutes(repository: AuthService) {
+fun Application.authRoutes() {
+
+    val authService: AuthService by inject()
+
     routing {
         route("/auth") {
             post("/register") {
                 val params = call.receive<CreateUserParams>()
-                val result = repository.registeruser(params)
+                val result = authService.registeruser(params)
                 call.respond(result.statusCode, result)
             }
 
             post("/login") {
                 val params = call.receive<UserLoginParams>()
-                val result = repository.loginUser(params)
+                val result = authService.loginUser(params)
                 call.respond(result.statusCode, result)
             }
         }

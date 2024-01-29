@@ -9,10 +9,11 @@ import com.fjr619.jwtpostgresql.domain.service.auth.AuthServiceImpl
 import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
 import com.fjr619.jwtpostgresql.presentation.routes.auth.authRoutes
 import com.fjr619.jwtpostgresql.presentation.routes.user.userRoutes
-import com.fjr619.jwtpostgresql.domain.security.hash.SHA256HashingService
-import com.fjr619.jwtpostgresql.domain.security.token.JwtTokenService
-import com.fjr619.jwtpostgresql.domain.security.token.TokenConfig
-import com.fjr619.jwtpostgresql.domain.security.hash.HashingService
+import com.fjr619.jwtpostgresql.domain.service.security.hash.SHA256HashingService
+import com.fjr619.jwtpostgresql.domain.service.security.token.JwtTokenService
+import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
+import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
+import com.fjr619.jwtpostgresql.presentation.plugin.configureKoin
 import io.ktor.server.application.Application
 import io.ktor.server.netty.EngineMain
 
@@ -24,25 +25,11 @@ import io.ktor.server.netty.EngineMain
 fun main(args: Array<String>): Unit = EngineMain.main(args)
 
 fun Application.module() {
-    DatabaseFactory.init()
+    configureKoin()
     configureSerialization()
     configureExceptions()
+    configureSecurity()
 
-    val tokenService = JwtTokenService()
-    val tokenConfig = TokenConfig(
-        issuer = environment.config.property("jwt.issuer").getString(),
-        audience = environment.config.property("jwt.audience").getString(),
-        expiresIn = 365L * 1000L * 60L * 60L * 24L,
-        secret = environment.config.property("jwt.secret").getString()
-    )
-    val hashingService: HashingService = SHA256HashingService()
-    val authRepository: AuthRepository = AuthRepositoryImpl(hashingService)
-    val authService = AuthServiceImpl(
-        authRepository,
-        tokenService,
-        tokenConfig
-    )
-    configureSecurity(tokenService, tokenConfig)
-    authRoutes(authService)
+    authRoutes()
     userRoutes()
 }

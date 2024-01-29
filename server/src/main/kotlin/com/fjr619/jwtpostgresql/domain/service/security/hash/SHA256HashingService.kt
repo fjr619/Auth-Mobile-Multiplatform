@@ -1,9 +1,11 @@
-package com.fjr619.jwtpostgresql.domain.security.hash
+package com.fjr619.jwtpostgresql.domain.service.security.hash
 
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
+import org.koin.core.annotation.Singleton
 import java.security.SecureRandom
 
+@Singleton
 class SHA256HashingService: HashingService {
     override fun generateSaltedHash(value: String, saltLength: Int): SaltedHash {
         val salt = SecureRandom.getInstance("SHA1PRNG").generateSeed(saltLength)

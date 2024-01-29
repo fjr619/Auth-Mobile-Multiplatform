@@ -1,10 +1,12 @@
-package com.fjr619.jwtpostgresql.domain.security.token
+package com.fjr619.jwtpostgresql.domain.service.security.token
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
+import org.koin.core.annotation.Singleton
 import java.util.*
 
+@Singleton
 class JwtTokenService: TokenService {
 
     override fun generate(config: TokenConfig, vararg claims: TokenClaim): String {

@@ -1,5 +1,6 @@
 package com.fjr619.jwtpostgresql.data.db
 
+import com.fjr619.jwtpostgresql.base.AppConfig
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
@@ -7,9 +8,14 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.koin.core.annotation.Singleton
 
-object DatabaseFactory {
-    fun init() {
+@Singleton
+class DatabaseFactory(
+    private val appConfig: AppConfig
+) {
+
+    init {
         Database.connect(hikari())
         transaction {
             SchemaUtils.createMissingTablesAndColumns(UserTable)
@@ -18,8 +24,8 @@ object DatabaseFactory {
 
     private fun hikari(): HikariDataSource {
         val hikariConfig = HikariConfig()
-        hikariConfig.driverClassName = "org.postgresql.Driver"
-        hikariConfig.jdbcUrl = "jdbc:postgresql:MyStoryApp?user=postgres&password=12345678"
+        hikariConfig.driverClassName = appConfig.applicationConfiguration.propertyOrNull("database.driver")?.getString()
+        hikariConfig.jdbcUrl = appConfig.applicationConfiguration.propertyOrNull("database.jdbcUrl")?.getString()
         hikariConfig.maximumPoolSize = 3
         hikariConfig.isAutoCommit = false
         hikariConfig.transactionIsolation = "TRANSACTION_REPEATABLE_READ"

@@ -5,17 +5,20 @@ import com.fjr619.jwtpostgresql.data.db.UserTable
 import com.fjr619.jwtpostgresql.presentation.plugin.ParsingException
 import com.fjr619.jwtpostgresql.presentation.plugin.ValidationException
 import com.fjr619.jwtpostgresql.domain.model.params.CreateUserParams
-import com.fjr619.jwtpostgresql.domain.security.hash.HashingService
-import com.fjr619.jwtpostgresql.domain.security.hash.SaltedHash
+import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
+import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash
 import com.fjr619.jwtpostgresql.data.db.UserEntity
 import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class AuthRepositoryImpl constructor(
-    private val hashingService: HashingService
+    private val hashingService: HashingService,
+    private val databaseFactory: DatabaseFactory
 ): AuthRepository {
     override suspend fun registerUser(params: CreateUserParams): UserEntity {
         val user = findUserByEmail(params.email)
@@ -25,7 +28,7 @@ class AuthRepositoryImpl constructor(
         }
 
         var statement: InsertStatement<Number>? = null
-        DatabaseFactory.dbQuery {
+        databaseFactory.dbQuery {
             val saltedHash = hashingService.generateSaltedHash(params.password)
             statement = UserTable.insert {
                 it[email] = params.email
@@ -57,7 +60,7 @@ class AuthRepositoryImpl constructor(
 
     override suspend fun findUserByEmail(email: String): UserEntity? {
         val user = try {
-            DatabaseFactory.dbQuery {
+            databaseFactory.dbQuery {
                 UserTable.selectAll().where { UserTable.email.eq(email) }.map {
                     rowToUserEntity(it)
                 }.singleOrNull()

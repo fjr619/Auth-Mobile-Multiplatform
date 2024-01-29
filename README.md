@@ -17,3 +17,9 @@ This is a Kotlin Multiplatform project targeting Android, iOS, Server.
 
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+
+Step :
+1. Install postgresql
+2. Create Database
+3. Open application.conf, edit jdbcUrl -> jdbc:postgresql:
+   {DATABASE_NAME}?user={USER_NAME}&password=(PASSWORD)
