@@ -28,6 +28,7 @@ fun Application.configureSerialization() {
 //        }
 
         json(Json {
+            encodeDefaults = true
             prettyPrint = true
             isLenient = true
             serializersModule = SerializersModule {

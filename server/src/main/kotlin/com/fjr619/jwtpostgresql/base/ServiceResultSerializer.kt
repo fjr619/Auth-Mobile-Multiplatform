@@ -2,6 +2,8 @@ package com.fjr619.jwtpostgresql.base
 
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,7 +11,9 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import mu.KLogger
 import mu.KotlinLogging
+import org.koin.java.KoinJavaComponent
 
 private val logger = KotlinLogging.logger {}
 
@@ -18,15 +22,18 @@ private val logger = KotlinLogging.logger {}
 class ServiceResultSerializer<T : Any>(
     tSerializer: KSerializer<T>
 ) : KSerializer<BaseResponse<T>> {
+
+//    val logger = KoinJavaComponent.inject<KLogger>(KLogger::class.java).value
+
     @Serializable
     @SerialName("BaseResponse")
-    data class ServiceResultSurrogate<T : Any>(
+    data class ServiceResultSurrogate<T : Any> @OptIn(ExperimentalSerializationApi::class) constructor(
         val type: Type,
         // The annotation is not necessary, but it avoids serializing "data = null"
         // for "Error" results.
-//        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
         val data: T? = null,
-//        @EncodeDefault(EncodeDefault.Mode.NEVER)
+        @EncodeDefault(EncodeDefault.Mode.NEVER)
         val message: String? = null,
 
         val statusCode: Int = -1

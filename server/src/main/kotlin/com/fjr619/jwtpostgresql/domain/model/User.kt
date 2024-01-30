@@ -2,10 +2,6 @@ package com.fjr619.jwtpostgresql.domain.model
 
 import com.fjr619.jwtpostgresql.domain.model.User.Role.ADMIN
 import com.fjr619.jwtpostgresql.domain.model.User.Role.USER
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 
@@ -26,7 +22,7 @@ data class User(
     val avatar: String,
     val email: String,
     var authToken: String? = null,
-    val role: Role = Role.USER
+    val role: Role = USER
 ) {
 
     /**

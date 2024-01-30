@@ -7,7 +7,8 @@ fun UserEntity.toModel() = User(
     id = this.id,
     fullName = this.fullName,
     avatar = this.avatar,
-    email = this.email
+    email = this.email,
+    role = User.Role.valueOf(this.role)
 )
 
 //fun User.toEntity() = UserEntity(
