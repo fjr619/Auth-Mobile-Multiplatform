@@ -1,8 +1,8 @@
-package com.fjr619.jwtpostgresql.domain.repository.auth
+package com.fjr619.jwtpostgresql.domain.repository.user
 
 import com.fjr619.jwtpostgresql.domain.model.User
 
-interface AuthRepository {
+interface UserRepository {
     suspend fun findByEmail(email: String): User?
     suspend fun findById(id: Long): User?
     suspend fun save(entity: User): User?

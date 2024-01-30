@@ -1,10 +1,10 @@
-package com.fjr619.jwtpostgresql.data.repository.auth
+package com.fjr619.jwtpostgresql.data.repository.user
 
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.data.db.UserTable
 import com.fjr619.jwtpostgresql.domain.model.mapper.toModel
 import com.fjr619.jwtpostgresql.domain.model.User
-import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
+import com.fjr619.jwtpostgresql.domain.repository.user.UserRepository
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash
 import mu.KLogger
@@ -20,11 +20,11 @@ import org.koin.core.annotation.Singleton
  */
 
 @Singleton
-class AuthRepositoryImpl constructor(
+class UserRepositoryImpl constructor(
     private val hashingService: HashingService,
     private val databaseFactory: DatabaseFactory,
     private val logger: KLogger
-) : AuthRepository {
+) : UserRepository {
 
 
 
