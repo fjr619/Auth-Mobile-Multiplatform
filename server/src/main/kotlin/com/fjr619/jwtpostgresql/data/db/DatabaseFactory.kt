@@ -1,6 +1,8 @@
 package com.fjr619.jwtpostgresql.data.db
 
 import com.fjr619.jwtpostgresql.base.AppConfig
+import com.fjr619.jwtpostgresql.data.db.schemas.StoryTable
+import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +25,7 @@ class DatabaseFactory(
     init {
         Database.connect(hikari())
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(UserTable)
+            SchemaUtils.createMissingTablesAndColumns(tables = arrayOf(UserTable, StoryTable))
         }
     }
 

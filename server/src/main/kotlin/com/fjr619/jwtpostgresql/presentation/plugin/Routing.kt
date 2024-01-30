@@ -1,6 +1,7 @@
 package com.fjr619.jwtpostgresql.presentation.plugin
 
-import com.fjr619.jwtpostgresql.presentation.routes.user.userRoutes
+import com.fjr619.jwtpostgresql.presentation.routes.storyRoutes
+import com.fjr619.jwtpostgresql.presentation.routes.userRoutes
 import io.ktor.server.application.Application
 
 /**
@@ -10,4 +11,5 @@ import io.ktor.server.application.Application
  */
 fun Application.configureRouting() {
     userRoutes()
+    storyRoutes()
 }

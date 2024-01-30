@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.data.db
+package com.fjr619.jwtpostgresql.data.db.schemas
 
 import com.fjr619.jwtpostgresql.domain.model.User
 import kotlinx.datetime.Clock

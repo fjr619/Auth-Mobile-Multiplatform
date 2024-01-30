@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.presentation.routes.user
+package com.fjr619.jwtpostgresql.presentation.routes
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import com.fjr619.jwtpostgresql.base.ServiceResultSerializer
@@ -11,7 +11,7 @@ import com.fjr619.jwtpostgresql.domain.service.security.token.TokenClaim
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
 import com.fjr619.jwtpostgresql.domain.service.user.UserService
-import com.fjr619.jwtpostgresql.presentation.error.handleUserError
+import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
 import com.github.michaelbull.result.mapBoth
 import io.github.smiley4.ktorswaggerui.dsl.get
 import io.github.smiley4.ktorswaggerui.dsl.post
@@ -36,9 +36,9 @@ fun Application.userRoutes() {
     val tokenService: TokenService by inject()
 
     routing {
-        route("/$ENDPOINT") {
+        route(ENDPOINT) {
 
-            post("/register", {
+            post("register", {
                 tags = listOf("USER")
                 description = "Register User"
                 request {
@@ -94,12 +94,12 @@ fun Application.userRoutes() {
                             )
                         },
                         failure = {
-                            handleUserError(it)
+                            handleRequestError(it)
                         }
                     )
             }
 
-            post("/login", {
+            post("login", {
                 tags = listOf("USER")
                 description = "Login User"
                 request {
@@ -162,13 +162,13 @@ fun Application.userRoutes() {
                         )
                     },
                     failure = {
-                        handleUserError(it)
+                        handleRequestError(it)
                     }
                 )
             }
 
             authenticate {
-                get("/me", {
+                get("me", {
                     tags = listOf("USER")
                     description = "Get Info Current User"
                     securitySchemeNames = setOf("JWT-Auth")
@@ -180,17 +180,17 @@ fun Application.userRoutes() {
                 }
 
                 //test admin scoope
-                get("/me/admin") {
+                get("me/admin") {
                     val userId =
                         call.principal<JWTPrincipal>()?.payload?.getClaim("userId").toString()
                             .replace("\"", "").toLong()
 
                     userService.isAdmin(userId).mapBoth(
                         success = {
-                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(data = it).toResponse())
+                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(data = "User Admin").toResponse())
                         },
                         failure = {
-                            handleUserError(it)
+                            handleRequestError(it)
                         }
                     )
                 }

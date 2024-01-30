@@ -1,10 +1,9 @@
 package com.fjr619.jwtpostgresql.domain.model.mapper
 
-import com.fjr619.jwtpostgresql.data.db.UserTable
+import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
 import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -18,7 +17,7 @@ fun User.toDto(): UserDto {
     )
 }
 
-fun UserCreateDto.toModel(): User {
+fun UserCreateDto.toUser(): User {
     return User(
         fullName = this.fullName,
         avatar = this.avatar,
@@ -26,7 +25,7 @@ fun UserCreateDto.toModel(): User {
         password = this.password
     )
 }
-fun ResultRow?.toModel(): User? {
+fun ResultRow?.toUser(): User? {
     return if (this == null) null
     else User(
         id = this[UserTable.id],

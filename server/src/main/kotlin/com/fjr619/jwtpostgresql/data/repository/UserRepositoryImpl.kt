@@ -1,10 +1,10 @@
-package com.fjr619.jwtpostgresql.data.repository.user
+package com.fjr619.jwtpostgresql.data.repository
 
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
-import com.fjr619.jwtpostgresql.data.db.UserTable
-import com.fjr619.jwtpostgresql.domain.model.mapper.toModel
+import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
+import com.fjr619.jwtpostgresql.domain.model.mapper.toUser
 import com.fjr619.jwtpostgresql.domain.model.User
-import com.fjr619.jwtpostgresql.domain.repository.user.UserRepository
+import com.fjr619.jwtpostgresql.domain.repository.UserRepository
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash
 import mu.KLogger
@@ -20,46 +20,16 @@ import org.koin.core.annotation.Singleton
  */
 
 @Singleton
-class UserRepositoryImpl constructor(
+class UserRepositoryImpl (
     private val hashingService: HashingService,
     private val databaseFactory: DatabaseFactory,
     private val logger: KLogger
 ) : UserRepository {
 
-
-
-//    /**
-//     * Login User
-//     * @param email Email
-//     * @param password Password
-//     * @return User
-//     */
-//    override suspend fun loginUser(email: String, password: String): User {
-//        val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
-//
-//        //example
-//        logger.debug {
-//            "user time = ${user.createdAt.convertTimeZone(TimeZone.currentSystemDefault())}"
-//        }
-//
-//        val isValidPassword = hashingService.verify(
-//            value = password,
-//            saltedHash = SaltedHash(
-//                hash = user.password,
-//                salt = user.salt
-//            )
-//        )
-//
-//        if (!isValidPassword) throw ValidationException("Incorrect password")
-//        return user.toModel()
-//    }
-
-
-
     override suspend fun findByEmail(email: String): User? {
         return databaseFactory.dbQuery {
             UserTable.selectAll().where { UserTable.email.eq(email) }.map {
-                it.toModel()
+                it.toUser()
             }.singleOrNull()
         }
     }
@@ -67,7 +37,7 @@ class UserRepositoryImpl constructor(
     override suspend fun findById(id: Long): User? {
         return databaseFactory.dbQuery {
             UserTable.selectAll().where { UserTable.id.eq(id) }.map {
-                it.toModel()
+                it.toUser()
             }.singleOrNull()
         }
     }
@@ -106,7 +76,7 @@ class UserRepositoryImpl constructor(
             }
         }
 
-        return statement?.resultedValues?.get(0).toModel()
+        return statement?.resultedValues?.get(0).toUser()
     }
 
     private fun update(entity: User): User? {

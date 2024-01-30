@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.domain.repository.user
+package com.fjr619.jwtpostgresql.domain.repository
 
 import com.fjr619.jwtpostgresql.domain.model.User
 

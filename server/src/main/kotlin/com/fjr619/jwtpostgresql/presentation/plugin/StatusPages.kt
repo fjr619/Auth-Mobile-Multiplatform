@@ -8,9 +8,9 @@ import io.ktor.server.plugins.requestvalidation.RequestValidationException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 
-class ValidationException(override val message: String) : Throwable()
-class ParsingException(override val message: String) : Throwable()
-class GenericException(override val message: String = "Some error occurred! Please try again late"): Throwable()
+//class ValidationException(override val message: String) : Throwable()
+//class ParsingException(override val message: String) : Throwable()
+//class GenericException(override val message: String = "Some error occurred! Please try again late"): Throwable()
 
 /**
  * Configure the Status Pages plugin and configure it
@@ -19,27 +19,18 @@ class GenericException(override val message: String = "Some error occurred! Plea
  */
 fun Application.configureExceptions() {
     install(StatusPages) {
-        exception<Throwable> { call, throwable ->
-            when (throwable) {
-                is ValidationException, is RequestValidationException, is GenericException -> {
-                    call.respond(
-                        HttpStatusCode.BadRequest,
-                        BaseResponse.ErrorResponse(
-                            statusCode = HttpStatusCode.BadRequest,
-                            message = throwable.message) as BaseResponse<Nothing>
-                    )
-                }
-
-                is ParsingException -> {
-                    call.respond(
-                        HttpStatusCode.NotFound,
-                        BaseResponse.ErrorResponse(
-                            statusCode = HttpStatusCode.NotFound,
-                            message = throwable.message) as BaseResponse<Nothing>
-                    )
-                }
-            }
-        }
+//        exception<Throwable> { call, throwable ->
+//            when (throwable) {
+//                 is RequestValidationException -> {
+//                    call.respond(
+//                        HttpStatusCode.BadRequest,
+//                        BaseResponse.ErrorResponse(
+//                            statusCode = HttpStatusCode.BadRequest,
+//                            message = throwable.message) as BaseResponse<Nothing>
+//                    )
+//                }
+//            }
+//        }
 
         // This is a custom exception we use to respond with a 400 if a validation fails, Bad Request
         exception<RequestValidationException> { call, cause ->
