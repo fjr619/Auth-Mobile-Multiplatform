@@ -8,6 +8,8 @@ import com.github.michaelbull.result.Result
 
 interface UserService {
     suspend fun findByEmail(email: String): Result<User, UserError>
+    suspend fun findById(id: Long): Result<User, UserError>
     suspend fun save(dto: UserCreateDto): Result<User, UserError>
     suspend fun checkUserNameAndPassword(dto: UserLoginDto): Result<User, UserError>
+    suspend fun isAdmin(id: Long): Result<Boolean, UserError>
 }

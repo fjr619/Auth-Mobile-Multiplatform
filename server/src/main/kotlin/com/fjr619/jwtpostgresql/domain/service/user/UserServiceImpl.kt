@@ -3,6 +3,7 @@ package com.fjr619.jwtpostgresql.domain.service.user
 import com.fjr619.jwtpostgresql.domain.model.GENERIC_ERROR
 import com.fjr619.jwtpostgresql.domain.model.USER_ALREADY_REGISTERED
 import com.fjr619.jwtpostgresql.domain.model.USER_LOGIN_FAILURE
+import com.fjr619.jwtpostgresql.domain.model.USER_NOT_ADMIN
 import com.fjr619.jwtpostgresql.domain.model.USER_NOT_FOUND
 import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.UserError
@@ -13,6 +14,7 @@ import com.fjr619.jwtpostgresql.domain.repository.user.UserRepository
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
 import mu.KLogger
@@ -25,6 +27,12 @@ class UserServiceImpl(
 ) : UserService {
     override suspend fun findByEmail(email: String): Result<User, UserError> {
         return userRepository.findByEmail(email)?.let {
+            Ok(it)
+        } ?: Err(UserError.NotFound(USER_NOT_FOUND))
+    }
+
+    override suspend fun findById(id: Long): Result<User, UserError> {
+        return userRepository.findById(id)?.let {
             Ok(it)
         } ?: Err(UserError.NotFound(USER_NOT_FOUND))
     }
@@ -43,5 +51,15 @@ class UserServiceImpl(
         return userRepository.checkUserNameAndPassword(dto.email, dto.password)?.let {
             Ok(it)
         } ?: Err(UserError.BadCredentials(USER_LOGIN_FAILURE))
+    }
+
+    override suspend fun isAdmin(id: Long): Result<Boolean, UserError> {
+        return findById(id).andThen {
+            if (it.role == User.Role.ADMIN) {
+                Ok(true)
+            } else {
+                Err(UserError.BadRole(USER_NOT_ADMIN))
+            }
+        }
     }
 }

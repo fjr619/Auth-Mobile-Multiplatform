@@ -2,6 +2,7 @@ package com.fjr619.jwtpostgresql.domain.validator
 
 import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
+import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
 import io.ktor.server.application.*
 import io.ktor.server.plugins.requestvalidation.RequestValidationConfig
 import io.ktor.server.plugins.requestvalidation.ValidationResult
@@ -21,13 +22,13 @@ fun RequestValidationConfig.userValidation() {
         }
     }
 
-//    validate<UserLoginParams> { user ->
-//        if (user.email.isBlank()) {
-//            ValidationResult.Invalid("The email cannot be empty")
-//        } else if (user.password.isBlank()) {
-//            ValidationResult.Invalid("The password cannot be empty")
-//        } else {
-//            ValidationResult.Valid
-//        }
-//    }
+    validate<UserLoginDto> { user ->
+        if (user.email.isBlank()) {
+            ValidationResult.Invalid("The email cannot be empty")
+        } else if (user.password.isBlank()) {
+            ValidationResult.Invalid("The password cannot be empty")
+        } else {
+            ValidationResult.Valid
+        }
+    }
 }

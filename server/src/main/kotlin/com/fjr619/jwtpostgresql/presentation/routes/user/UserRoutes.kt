@@ -19,6 +19,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
@@ -166,7 +168,7 @@ fun Application.userRoutes() {
             }
 
             authenticate {
-                get("/me",{
+                get("/me", {
                     tags = listOf("USER")
                     description = "Get Info Current User"
                     securitySchemeNames = setOf("JWT-Auth")
@@ -174,6 +176,22 @@ fun Application.userRoutes() {
                     call.respond(
                         HttpStatusCode.OK,
                         BaseResponse.SuccessResponse("api user") as BaseResponse<String>
+                    )
+                }
+
+                //test admin scoope
+                get("/me/admin") {
+                    val userId =
+                        call.principal<JWTPrincipal>()?.payload?.getClaim("userId").toString()
+                            .replace("\"", "").toLong()
+
+                    userService.isAdmin(userId).mapBoth(
+                        success = {
+                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(data = it).toResponse())
+                        },
+                        failure = {
+                            handleUserError(it)
+                        }
                     )
                 }
             }
