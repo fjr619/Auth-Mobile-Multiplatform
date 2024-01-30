@@ -3,6 +3,8 @@ package com.fjr619.jwtpostgresql.presentation.routes
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toDto
+import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
+import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
 import com.fjr619.jwtpostgresql.domain.service.story.StoryService
 import com.fjr619.jwtpostgresql.domain.service.user.UserService
 import com.fjr619.jwtpostgresql.presentation.error.getUserId
@@ -28,6 +30,8 @@ fun Application.storyRoutes() {
 
     val storyService: StoryService by inject()
     val userService: UserService by inject()
+    val tokenConfig: TokenConfig by inject()
+    val tokenService: TokenService by inject()
 
     routing {
         route(ENDPOINT) {
@@ -36,9 +40,11 @@ fun Application.storyRoutes() {
                     val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
                     storyService.findById(storyId).mapBoth(
                         success = {
+                            val token = it.user?.generateToken(tokenConfig, tokenService)
                             call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
                                 statusCode = HttpStatusCode.OK,
-                                data = it.toDto()
+                                data = it.toDto(),
+                                authToken = token
                             ).toResponse())
                         },
                         failure = {
@@ -50,14 +56,17 @@ fun Application.storyRoutes() {
                 //add story
                 post ("/") {
                     val params = call.receive<StoryCreatedDto>()
+                    lateinit var token: String
 
                     userService.findById(getUserId()).andThen {
+                        token = it.generateToken(tokenConfig, tokenService)
                         storyService.add(it, params)
                     }.mapBoth(
                         success = {
                             call.respond(HttpStatusCode.Created, BaseResponse.SuccessResponse(
                                 statusCode = HttpStatusCode.Created,
-                                data = it.toDto()
+                                data = it.toDto(),
+                                authToken = token
                             ).toResponse())
                         },
                         failure = {

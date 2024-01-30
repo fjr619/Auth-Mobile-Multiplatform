@@ -36,7 +36,8 @@ class ServiceResultSerializer<T : Any>(
         @EncodeDefault(EncodeDefault.Mode.NEVER)
         val message: String? = null,
 
-        val statusCode: Int = -1
+        val statusCode: Int = -1,
+        val token: String? = null
     ) {
         enum class Type { SUCCESS, ERROR }
     }
@@ -65,7 +66,8 @@ class ServiceResultSerializer<T : Any>(
                 ServiceResultSurrogate(
                     ServiceResultSurrogate.Type.ERROR,
                     message = value.message,
-                    statusCode = value.statusCode.value
+                    statusCode = value.statusCode.value,
+                    token = value.authToken
                 )
             }
 
@@ -73,7 +75,8 @@ class ServiceResultSerializer<T : Any>(
                 ServiceResultSurrogate(
                     ServiceResultSurrogate.Type.SUCCESS,
                     data = value.data,
-                    statusCode = value.statusCode.value
+                    statusCode = value.statusCode.value,
+                    token = value.authToken
                 )
             }
         }

@@ -53,8 +53,7 @@ fun Application.userRoutes() {
                                         id = 14,
                                         fullName = "Full Name",
                                         avatar = "Avatar",
-                                        email = "aaa6@aaa.com",
-                                        authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJteS1zdG9yeS1hcHAiLCJpc3MiOiJteS1zdG9yeS1hcHAiLCJleHAiOjE3MzgwNjEyNTMsInVzZXJJZCI6IjE0IiwiZW1haWwiOiJhYWE2QGFhYS5jb20ifQ.lVBGy7zH-QaQ1E2lSGYBHKcq5z5-2gNWQBhI0XZRcM4"
+                                        email = "aaa6@aaa.com"
                                     ),
                                     statusCode = 201
                                 )
@@ -83,12 +82,11 @@ fun Application.userRoutes() {
                     .mapBoth(
                         success = {
                             val token = it.generateToken(tokenConfig, tokenService)
-                            val dataResponse = it.toDto()
-                            dataResponse.authToken = token
                             call.respond(
                                 HttpStatusCode.Created, BaseResponse.SuccessResponse(
                                     statusCode = HttpStatusCode.Created,
-                                    data = dataResponse
+                                    data = it.toDto(),
+                                    authToken = token
                                 ).toResponse()
                             )
                         },
@@ -123,7 +121,6 @@ fun Application.userRoutes() {
                                         fullName = "Full Name",
                                         avatar = "Avatar",
                                         email = "aaa6@aaa.com",
-                                        authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJteS1zdG9yeS1hcHAiLCJpc3MiOiJteS1zdG9yeS1hcHAiLCJleHAiOjE3MzgwNjEyNTMsInVzZXJJZCI6IjE0IiwiZW1haWwiOiJhYWE2QGFhYS5jb20ifQ.lVBGy7zH-QaQ1E2lSGYBHKcq5z5-2gNWQBhI0XZRcM4"
                                     ),
                                     statusCode = 200
                                 )
@@ -151,12 +148,11 @@ fun Application.userRoutes() {
                 userService.checkUserNameAndPassword(dto).mapBoth(
                     success = {
                         val token = it.generateToken(tokenConfig, tokenService)
-                        val dataResponse = it.toDto()
-                        dataResponse.authToken = token
                         call.respond(
-                            HttpStatusCode.Created, BaseResponse.SuccessResponse(
-                                statusCode = HttpStatusCode.Created,
-                                data = dataResponse
+                            HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                statusCode = HttpStatusCode.OK,
+                                data = it.toDto(),
+                                authToken = token
                             ).toResponse()
                         )
                     },
@@ -199,7 +195,7 @@ fun Application.userRoutes() {
     }
 }
 
-private fun User.generateToken(tokenConfig: TokenConfig, tokenService: TokenService): String {
+fun User.generateToken(tokenConfig: TokenConfig, tokenService: TokenService): String {
     return tokenService.generate(
         config = tokenConfig,
         claims = arrayOf(
