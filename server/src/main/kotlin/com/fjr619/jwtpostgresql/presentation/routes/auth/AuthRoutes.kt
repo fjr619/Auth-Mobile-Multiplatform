@@ -47,7 +47,7 @@ fun Application.authRoutes() {
                         }
                     }
 
-                    HttpStatusCode.BadGateway to {
+                    HttpStatusCode.BadRequest to {
                         body<ServiceResultSerializer.ServiceResultSurrogate<Nothing>> {
                             example(
                                 "Error", ServiceResultSerializer.ServiceResultSurrogate(
@@ -98,7 +98,7 @@ fun Application.authRoutes() {
                         }
                     }
 
-                    HttpStatusCode.BadGateway to {
+                    HttpStatusCode.BadRequest to {
                         body<ServiceResultSerializer.ServiceResultSurrogate<Nothing>> {
                             example(
                                 "Error", ServiceResultSerializer.ServiceResultSurrogate(

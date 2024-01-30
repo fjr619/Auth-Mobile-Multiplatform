@@ -30,7 +30,7 @@ class AuthServiceImpl(
      * Register User
      */
     override suspend fun registeruser(params: UserRegisterParams): BaseResponse<User> {
-        val user = authRepository.registerUser(params).toModel()
+        val user = authRepository.registerUser(params)
         user.authToken = user.generateToken()
         return BaseResponse.SuccessResponse(data = user)
     }
@@ -40,7 +40,7 @@ class AuthServiceImpl(
      */
 
     override suspend fun loginUser(params: UserLoginParams): BaseResponse<User> {
-        val user = authRepository.loginUser(params.email, params.password).toModel()
+        val user = authRepository.loginUser(params.email, params.password)
         user.authToken = user.generateToken()
         return BaseResponse.SuccessResponse(data = user)
     }

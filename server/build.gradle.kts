@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.logback)
     implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+
 
     testImplementation(libs.ktor.server.tests)
     testImplementation(libs.kotlin.test.junit)

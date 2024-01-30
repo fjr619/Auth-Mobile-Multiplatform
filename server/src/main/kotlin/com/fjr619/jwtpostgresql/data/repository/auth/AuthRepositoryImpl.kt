@@ -1,38 +1,48 @@
 package com.fjr619.jwtpostgresql.data.repository.auth
 
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
+import com.fjr619.jwtpostgresql.data.db.UserEntity
 import com.fjr619.jwtpostgresql.data.db.UserTable
-import com.fjr619.jwtpostgresql.presentation.plugin.ParsingException
-import com.fjr619.jwtpostgresql.presentation.plugin.ValidationException
+import com.fjr619.jwtpostgresql.data.db.convertTimeZone
+import com.fjr619.jwtpostgresql.data.mapper.toModel
+import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.params.UserRegisterParams
+import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash
-import com.fjr619.jwtpostgresql.data.db.UserEntity
-import com.fjr619.jwtpostgresql.domain.repository.auth.AuthRepository
+import com.fjr619.jwtpostgresql.presentation.plugin.ParsingException
+import com.fjr619.jwtpostgresql.presentation.plugin.ValidationException
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
+import mu.KLogger
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
 import org.koin.core.annotation.Singleton
+import java.time.ZoneOffset
 
 /**
  * Auth Repository
- * @property dataBaseService Database service
+ * @property databaseFactory Database service
  * @property hashingService Hashing service
  */
 
 @Singleton
 class AuthRepositoryImpl constructor(
     private val hashingService: HashingService,
-    private val databaseFactory: DatabaseFactory
-): AuthRepository {
+    private val databaseFactory: DatabaseFactory,
+    private val logger: KLogger
+) : AuthRepository {
 
     /**
      * Register user
      * @param params User register params
-     * @return User Entity
+     * @return User
      */
-    override suspend fun registerUser(params: UserRegisterParams): UserEntity {
+    override suspend fun registerUser(params: UserRegisterParams): User {
         val user = findUserByEmail(params.email)
 
         if (user != null) {
@@ -51,7 +61,7 @@ class AuthRepositoryImpl constructor(
             }
         }
 
-        return rowToUserEntity(statement?.resultedValues?.get(0))
+        return rowToUserEntity(statement?.resultedValues?.get(0))?.toModel()
             ?: throw ParsingException("Error cant register")
     }
 
@@ -59,10 +69,15 @@ class AuthRepositoryImpl constructor(
      * Login User
      * @param email Email
      * @param password Password
-     * @return User Entity
+     * @return User
      */
-    override suspend fun loginUser(email: String, password: String): UserEntity {
+    override suspend fun loginUser(email: String, password: String): User {
         val user = findUserByEmail(email) ?: throw ValidationException("Incorrect username")
+
+        //example
+        logger.debug {
+            "user time = ${user.createdAt.convertTimeZone(TimeZone.currentSystemDefault())}"
+        }
 
         val isValidPassword = hashingService.verify(
             value = password,
@@ -73,7 +88,7 @@ class AuthRepositoryImpl constructor(
         )
 
         if (!isValidPassword) throw ValidationException("Incorrect password")
-        return user
+        return user.toModel()
     }
 
     /**
@@ -81,7 +96,7 @@ class AuthRepositoryImpl constructor(
      * @param email Email
      * @return User Entity nullable
      */
-    override suspend fun findUserByEmail(email: String): UserEntity? {
+    private suspend fun findUserByEmail(email: String): UserEntity? {
         val user = try {
             databaseFactory.dbQuery {
                 UserTable.selectAll().where { UserTable.email.eq(email) }.map {
@@ -109,7 +124,11 @@ class AuthRepositoryImpl constructor(
             email = row[UserTable.email],
             salt = row[UserTable.salt],
             password = row[UserTable.password],
-            createdAt = row[UserTable.createdAt].toString()
+            role = row[UserTable.role],
+
+            createdAt = row[UserTable.createdAt].toString().toLocalDateTime(),
+            updatedAt = row[UserTable.updateAt].toString().toLocalDateTime(),
+            deleted = row[UserTable.deleted]
         )
     }
 }
