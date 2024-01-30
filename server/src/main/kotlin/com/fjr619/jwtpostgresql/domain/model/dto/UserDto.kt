@@ -13,7 +13,7 @@ data class UserDto(
     val avatar: String,
     val email: String,
     var authToken: String? = null,
-    val role: User.Role = User.Role.USER
+//    val role: User.Role = User.Role.USER
 )
 
 /**

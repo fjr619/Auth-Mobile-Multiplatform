@@ -5,6 +5,8 @@ import com.fjr619.jwtpostgresql.domain.model.RequestError
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.principal
 import io.ktor.server.response.respond
 import io.ktor.util.pipeline.PipelineContext
 
@@ -20,4 +22,9 @@ suspend fun PipelineContext<Unit, ApplicationCall>.handleRequestError(
         is RequestError.BadCredentials -> call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(message = error.message).toResponse())
         is RequestError.BadRole -> call.respond(HttpStatusCode.Forbidden, BaseResponse.ErrorResponse(message = error.message).toResponse())
     }
+}
+
+fun PipelineContext<Unit, ApplicationCall>.getUserId(): Long {
+    return call.principal<JWTPrincipal>()?.payload?.getClaim("userId").toString()
+        .replace("\"", "").toLong()
 }

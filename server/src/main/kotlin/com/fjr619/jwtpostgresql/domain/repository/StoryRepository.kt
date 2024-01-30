@@ -5,5 +5,5 @@ import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 
 interface StoryRepository {
     suspend fun findById(id: Long): Story?
-    suspend fun add(dto: StoryCreatedDto): Story?
+    suspend fun add(userId: Long, entity: Story): Story?
 }

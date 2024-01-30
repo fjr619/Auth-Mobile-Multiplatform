@@ -11,6 +11,7 @@ import com.fjr619.jwtpostgresql.domain.service.security.token.TokenClaim
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
 import com.fjr619.jwtpostgresql.domain.service.user.UserService
+import com.fjr619.jwtpostgresql.presentation.error.getUserId
 import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
 import com.github.michaelbull.result.mapBoth
 import io.github.smiley4.ktorswaggerui.dsl.get
@@ -19,8 +20,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.jwt.JWTPrincipal
-import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
@@ -181,13 +180,13 @@ fun Application.userRoutes() {
 
                 //test admin scoope
                 get("me/admin") {
-                    val userId =
-                        call.principal<JWTPrincipal>()?.payload?.getClaim("userId").toString()
-                            .replace("\"", "").toLong()
-
+                    val userId = getUserId()
                     userService.isAdmin(userId).mapBoth(
                         success = {
-                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(data = "User Admin").toResponse())
+                            call.respond(
+                                HttpStatusCode.OK,
+                                BaseResponse.SuccessResponse(data = "User Admin").toResponse()
+                            )
                         },
                         failure = {
                             handleRequestError(it)

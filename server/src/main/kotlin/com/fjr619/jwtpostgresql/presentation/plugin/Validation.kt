@@ -1,5 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.plugin
 
+import com.fjr619.jwtpostgresql.domain.validator.storyValidation
 import com.fjr619.jwtpostgresql.domain.validator.userValidation
 import io.ktor.server.application.*
 import io.ktor.server.plugins.requestvalidation.*
@@ -13,5 +14,6 @@ import io.ktor.server.plugins.requestvalidation.*
 fun Application.configureValidation() {
     install(RequestValidation) {
         userValidation()
+        storyValidation()
     }
 }

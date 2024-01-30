@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 
-object StoryTable : Table("stories") {
+object StoryTable: Table("stories") {
     val id = long("id").autoIncrement()
     val userId = (long("user_id")) references(UserTable.id)
     val title = varchar("title", 256)

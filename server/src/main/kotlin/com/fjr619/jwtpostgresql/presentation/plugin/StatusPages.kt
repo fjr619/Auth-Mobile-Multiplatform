@@ -19,7 +19,7 @@ import io.ktor.server.response.respond
  */
 fun Application.configureExceptions() {
     install(StatusPages) {
-//        exception<Throwable> { call, throwable ->
+//        exception<Exception> { call, throwable ->
 //            when (throwable) {
 //                 is RequestValidationException -> {
 //                    call.respond(
@@ -32,13 +32,18 @@ fun Application.configureExceptions() {
 //            }
 //        }
 
-        // This is a custom exception we use to respond with a 400 if a validation fails, Bad Request
-        exception<RequestValidationException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(
-                statusCode = HttpStatusCode.BadRequest,
-                message = cause.reasons.joinToString()
-            ) as BaseResponse<Nothing>)
+        exception<Exception> { call, exception ->
+            when(exception) {
+                is RequestValidationException -> {
+                    call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(
+                        statusCode = HttpStatusCode.BadRequest,
+                        message = exception.reasons.joinToString()
+                    ) as BaseResponse<Nothing>)
+                }
+            }
         }
+
+
 
         status(
             HttpStatusCode.InternalServerError,
