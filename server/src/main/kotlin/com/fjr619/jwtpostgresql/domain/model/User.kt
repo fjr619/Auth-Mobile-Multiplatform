@@ -1,28 +1,30 @@
 package com.fjr619.jwtpostgresql.domain.model
 
+
 import com.fjr619.jwtpostgresql.domain.model.User.Role.ADMIN
 import com.fjr619.jwtpostgresql.domain.model.User.Role.USER
-import kotlinx.serialization.Serializable
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 
-/**
- * User Model
- * @param id User ID
- * @param fullName User name
- * @param email User email
- * @param password User password
- * @param avatar User avatar URL
- * @param role User role
- */
-
-@Serializable
 data class User(
-    val id: Long,
+    val id: Long = NEW_USER,
+
+    //data
     val fullName: String,
-    val avatar: String,
+    val avatar: String = DEFAULT_IMAGE,
     val email: String,
-    var authToken: String? = null,
-    val role: Role = USER
+    val password: String,
+    val salt: String = "",
+    val role: Role = USER,
+
+    //metadata
+    val createdAt: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+    val updatedAt: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+    val deleted: Boolean = false
 ) {
 
     /**
@@ -43,4 +45,20 @@ data class User(
     enum class Role {
         USER, ADMIN
     }
+}
+
+/**
+ * User Errors
+ */
+sealed class UserError(val message: String) {
+    class NotFound(message: String) : UserError(message)
+    class BadRequest(message: String) : UserError(message)
+    class BadCredentials(message: String) : UserError(message)
+    class BadRole(message: String) : UserError(message)
+    class Unauthorized(message: String) : UserError(message)
+    class Forbidden(message: String) : UserError(message)
+}
+
+fun LocalDateTime.convertTimeZone(zone: TimeZone): LocalDateTime {
+    return this.toInstant(TimeZone.UTC).toLocalDateTime(zone)
 }

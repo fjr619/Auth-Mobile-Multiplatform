@@ -68,6 +68,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
+    implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.18")
 
     testImplementation(libs.ktor.server.tests)
     testImplementation(libs.kotlin.test.junit)

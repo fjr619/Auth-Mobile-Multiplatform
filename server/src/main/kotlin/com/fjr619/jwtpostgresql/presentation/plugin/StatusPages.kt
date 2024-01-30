@@ -10,6 +10,7 @@ import io.ktor.server.response.respond
 
 class ValidationException(override val message: String) : Throwable()
 class ParsingException(override val message: String) : Throwable()
+class GenericException(override val message: String = "Some error occurred! Please try again late"): Throwable()
 
 /**
  * Configure the Status Pages plugin and configure it
@@ -20,7 +21,7 @@ fun Application.configureExceptions() {
     install(StatusPages) {
         exception<Throwable> { call, throwable ->
             when (throwable) {
-                is ValidationException, is RequestValidationException -> {
+                is ValidationException, is RequestValidationException, is GenericException -> {
                     call.respond(
                         HttpStatusCode.BadRequest,
                         BaseResponse.ErrorResponse(

@@ -1,12 +1,8 @@
 package com.fjr619.jwtpostgresql.base
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
-import java.lang.Exception
 
 @Serializable(with = ServiceResultSerializer::class)
 sealed class BaseResponse<out T: Any>(
@@ -19,7 +15,9 @@ sealed class BaseResponse<out T: Any>(
         @Contextual
         @Serializable(with = HttpStatusCodeSerializer::class)
         override val statusCode: HttpStatusCode = HttpStatusCode.OK
-    ) : BaseResponse<T>(statusCode)
+    ) : BaseResponse<T>(statusCode) {
+        fun toResponse() = this as BaseResponse<T>
+    }
 
 
     data class ErrorResponse(
@@ -28,5 +26,7 @@ sealed class BaseResponse<out T: Any>(
         @Contextual
         @Serializable(with = HttpStatusCodeSerializer::class)
         override val statusCode: HttpStatusCode = HttpStatusCode.BadRequest
-    ) : BaseResponse<Nothing>(statusCode)
+    ) : BaseResponse<Nothing>(statusCode) {
+        fun toResponse() = this as BaseResponse<Nothing>
+    }
 }
