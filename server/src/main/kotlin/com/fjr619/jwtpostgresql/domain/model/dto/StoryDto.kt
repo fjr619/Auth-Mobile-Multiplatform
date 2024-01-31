@@ -20,3 +20,11 @@ data class StoryCreatedDto(
     val content: String,
     val isDraft: Boolean
 )
+
+@Serializable
+data class StoryUpdateDto(
+    val id: Long,
+    val title: String,
+    val content: String,
+    val isDraft: Boolean
+)

@@ -210,3 +210,19 @@ fun User.generateToken(tokenConfig: TokenConfig, tokenService: TokenService): St
         )
     )
 }
+
+fun generateToken(tokenConfig: TokenConfig, tokenService: TokenService, userId: Long, email: String): String {
+    return tokenService.generate(
+        config = tokenConfig,
+        claims = arrayOf(
+            TokenClaim(
+                name = "userId",
+                value = userId.toString()
+            ),
+            TokenClaim(
+                name = "email",
+                value = email
+            )
+        )
+    )
+}

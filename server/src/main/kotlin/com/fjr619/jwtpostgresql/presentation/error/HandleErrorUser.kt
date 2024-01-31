@@ -28,3 +28,8 @@ fun PipelineContext<Unit, ApplicationCall>.getUserId(): Long {
     return call.principal<JWTPrincipal>()?.payload?.getClaim("userId").toString()
         .replace("\"", "").toLong()
 }
+
+fun PipelineContext<Unit, ApplicationCall>.getEmail(): String {
+    return call.principal<JWTPrincipal>()?.payload?.getClaim("email").toString()
+        .replace("\"", "").toString()
+}

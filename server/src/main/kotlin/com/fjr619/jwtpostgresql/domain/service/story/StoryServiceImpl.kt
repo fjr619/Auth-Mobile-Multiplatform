@@ -6,13 +6,13 @@ import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.Story
 import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
+import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toStory
 import com.fjr619.jwtpostgresql.domain.repository.StoryRepository
-import com.fjr619.jwtpostgresql.domain.repository.UserRepository
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import com.github.michaelbull.result.andThen
+import org.jetbrains.exposed.sql.idParam
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -26,7 +26,15 @@ class StoryServiceImpl(
     }
 
     override suspend fun add(user: User, params: StoryCreatedDto): Result<Story, RequestError> {
-        return storyRepository.add(user.id, params.toStory())?.let {
+        return storyRepository.save(user.id, params.toStory())?.let {
+            Ok(it.copy(
+                user = user
+            ))
+        } ?: Err(RequestError.BadRequest(GENERIC_ERROR))
+    }
+
+    override suspend fun update(user: User, params: StoryUpdateDto): Result<Story, RequestError> {
+        return storyRepository.save(user.id, params.toStory())?.let {
             Ok(it.copy(
                 user = user
             ))

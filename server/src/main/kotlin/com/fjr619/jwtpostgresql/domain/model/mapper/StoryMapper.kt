@@ -6,6 +6,7 @@ import com.fjr619.jwtpostgresql.domain.model.Story
 import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryDto
+import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.ResultRow
 
@@ -19,6 +20,13 @@ fun Story.toDto() = StoryDto(
 )
 
 fun StoryCreatedDto.toStory() = Story(
+    title = this.title,
+    content = this.content,
+    isDraft = this.isDraft
+)
+
+fun StoryUpdateDto.toStory() = Story(
+    id = this.id,
     title = this.title,
     content = this.content,
     isDraft = this.isDraft

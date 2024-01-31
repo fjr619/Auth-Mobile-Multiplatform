@@ -2,15 +2,18 @@ package com.fjr619.jwtpostgresql.presentation.routes
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
+import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toDto
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
 import com.fjr619.jwtpostgresql.domain.service.story.StoryService
 import com.fjr619.jwtpostgresql.domain.service.user.UserService
+import com.fjr619.jwtpostgresql.presentation.error.getEmail
 import com.fjr619.jwtpostgresql.presentation.error.getUserId
 import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapBoth
+import io.github.smiley4.ktorswaggerui.dsl.delete
 import io.github.smiley4.ktorswaggerui.dsl.get
 import io.github.smiley4.ktorswaggerui.dsl.put
 import io.ktor.http.HttpStatusCode
@@ -36,6 +39,8 @@ fun Application.storyRoutes() {
     routing {
         route(ENDPOINT) {
             authenticate {
+
+                //get story
                 get("{id}") {
                     val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
                     storyService.findById(storyId).mapBoth(
@@ -55,12 +60,11 @@ fun Application.storyRoutes() {
 
                 //add story
                 post ("/") {
-                    val params = call.receive<StoryCreatedDto>()
-                    lateinit var token: String
+                    val requestBody = call.receive<StoryCreatedDto>()
+                    val token = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
 
                     userService.findById(getUserId()).andThen {
-                        token = it.generateToken(tokenConfig, tokenService)
-                        storyService.add(it, params)
+                        storyService.add(it, requestBody)
                     }.mapBoth(
                         success = {
                             call.respond(HttpStatusCode.Created, BaseResponse.SuccessResponse(
@@ -76,8 +80,24 @@ fun Application.storyRoutes() {
                 }
 
                 //update story
-                put ("/{id}") {
-                    call.respond(HttpStatusCode.OK, "OKK")
+                put ("/") {
+                    val requestBody = call.receive<StoryUpdateDto>()
+                    val token: String = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
+
+                    userService.findById(getUserId()).andThen {
+                        storyService.update(it, requestBody)
+                    }.mapBoth(
+                        success = {
+                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                statusCode = HttpStatusCode.OK,
+                                data = it.toDto(),
+                                authToken = token
+                            ).toResponse())
+                        },
+                        failure = {
+                            handleRequestError(it)
+                        }
+                    )
                 }
             }
         }

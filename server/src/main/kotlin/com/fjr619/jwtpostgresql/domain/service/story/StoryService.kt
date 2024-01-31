@@ -4,9 +4,12 @@ import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.Story
 import com.fjr619.jwtpostgresql.domain.model.User
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
+import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
 import com.github.michaelbull.result.Result
 
 interface StoryService {
     suspend fun findById(id: Long): Result<Story, RequestError>
     suspend fun add(user: User, params: StoryCreatedDto): Result<Story, RequestError>
+
+    suspend fun update(user: User, params: StoryUpdateDto): Result<Story, RequestError>
 }
