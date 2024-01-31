@@ -1,5 +1,6 @@
 package com.fjr619.jwtpostgresql.domain.service.story
 
+import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.entity.Story
 import com.fjr619.jwtpostgresql.domain.model.entity.User
@@ -12,4 +13,6 @@ interface StoryService {
     suspend fun add(user: User, params: StoryCreatedDto): Result<Story, RequestError>
 
     suspend fun update(user: User, params: StoryUpdateDto): Result<Story, RequestError>
+
+    suspend fun getList(userId: Long, page: Int, limit: Int): Result<PaginatedResult<Story>, RequestError>
 }

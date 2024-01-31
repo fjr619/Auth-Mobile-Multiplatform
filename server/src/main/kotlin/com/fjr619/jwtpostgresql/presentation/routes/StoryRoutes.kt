@@ -1,6 +1,7 @@
 package com.fjr619.jwtpostgresql.presentation.routes
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
+import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toDto
@@ -11,6 +12,7 @@ import com.fjr619.jwtpostgresql.domain.service.user.UserService
 import com.fjr619.jwtpostgresql.presentation.error.getEmail
 import com.fjr619.jwtpostgresql.presentation.error.getUserId
 import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
+import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapBoth
 import io.github.smiley4.ktorswaggerui.dsl.delete
@@ -39,6 +41,35 @@ fun Application.storyRoutes() {
     routing {
         route(ENDPOINT) {
             authenticate {
+
+                //get all my stories api/stories/list?page=1&limit=3
+                get("list") {
+                    val userId = getUserId()
+                    val token = generateToken(tokenConfig, tokenService, userId, getEmail())
+
+                    val page = call.request.queryParameters["page"]?.toIntOrNull() ?: 1
+                    val limit = call.request.queryParameters["limit"]?.toIntOrNull() ?: 10
+
+                    storyService.getList(userId, page, limit).andThen {
+                        val result = it
+                        val data = result.data.map {
+                            it.toDto()
+                        }
+                        Ok(PaginatedResult(it.pageCount, it.nextPage, data))
+                    }.mapBoth(
+                        success = {
+                            call.respond(HttpStatusCode.OK,
+                                BaseResponse.SuccessResponse(
+                                    statusCode = HttpStatusCode.OK,
+                                    data = it,
+                                    authToken = token
+                                ).toResponse())
+                        },
+                        failure = {
+                            handleRequestError(it)
+                        }
+                    )
+                }
 
                 //get story
                 get("{id}") {

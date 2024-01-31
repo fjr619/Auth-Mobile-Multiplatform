@@ -2,6 +2,7 @@ package com.fjr619.jwtpostgresql.domain.service.story
 
 import com.fjr619.jwtpostgresql.domain.model.GENERIC_ERROR
 import com.fjr619.jwtpostgresql.domain.model.NOT_FOUND
+import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.entity.Story
 import com.fjr619.jwtpostgresql.domain.model.entity.User
@@ -38,5 +39,13 @@ class StoryServiceImpl(
                 user = user
             ))
         } ?: Err(RequestError.BadRequest(GENERIC_ERROR))
+    }
+
+    override suspend fun getList(
+        userId: Long,
+        page: Int,
+        limit: Int
+    ): Result<PaginatedResult<Story>, RequestError> {
+        return Ok(storyRepository.getList(userId, page, limit))
     }
 }
