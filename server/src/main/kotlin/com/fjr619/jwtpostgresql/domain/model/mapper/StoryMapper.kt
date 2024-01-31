@@ -14,8 +14,8 @@ fun Story.toDto() = StoryDto(
     title = this.title,
     content = this.content,
     isDraft = this.isDraft,
-    createdAt = this.createdAt.toString(),
-    updatedAt = this.updatedAt.toString()
+    createdAt = this.createdAt,
+    updatedAt = this.updatedAt
 )
 
 fun StoryCreatedDto.toStory() = Story(
@@ -25,7 +25,6 @@ fun StoryCreatedDto.toStory() = Story(
 )
 
 fun StoryUpdateDto.toStory() = Story(
-    id = this.id,
     title = this.title,
     content = this.content,
     isDraft = this.isDraft

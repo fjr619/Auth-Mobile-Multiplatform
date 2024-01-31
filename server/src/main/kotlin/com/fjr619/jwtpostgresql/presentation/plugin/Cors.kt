@@ -10,6 +10,8 @@ fun Application.configureCors() {
         allowHeader(HttpHeaders.ContentType) // Allow Content-Type header
         allowHeader(HttpHeaders.Authorization)
         allowHost("client-host") // Allow requests from client-host
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
 
         // We can also specify options
         /*allowHost("client-host") // Allow requests from client-host

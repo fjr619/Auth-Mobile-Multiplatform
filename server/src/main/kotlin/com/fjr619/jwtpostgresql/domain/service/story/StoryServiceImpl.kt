@@ -34,8 +34,8 @@ class StoryServiceImpl(
         } ?: Err(RequestError.BadRequest(GENERIC_ERROR))
     }
 
-    override suspend fun update(user: User, params: StoryUpdateDto): Result<Story, RequestError> {
-        return storyRepository.save(user.id, params.toStory())?.let {
+    override suspend fun update(user: User, id: Long, params: StoryUpdateDto): Result<Story, RequestError> {
+        return storyRepository.save(user.id, params.toStory().copy(id = id))?.let {
             Ok(it.copy(
                 user = user
             ))

@@ -12,7 +12,7 @@ interface StoryService {
     suspend fun findById(id: Long): Result<Story, RequestError>
     suspend fun add(user: User, params: StoryCreatedDto): Result<Story, RequestError>
 
-    suspend fun update(user: User, params: StoryUpdateDto): Result<Story, RequestError>
+    suspend fun update(user: User, id: Long, params: StoryUpdateDto): Result<Story, RequestError>
 
     suspend fun getList(userId: Long, page: Int, limit: Int): Result<PaginatedResult<Story>, RequestError>
 

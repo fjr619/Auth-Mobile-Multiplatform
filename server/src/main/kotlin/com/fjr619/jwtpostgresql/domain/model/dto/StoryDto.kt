@@ -1,5 +1,6 @@
 package com.fjr619.jwtpostgresql.domain.model.dto
 
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,8 +9,8 @@ data class StoryDto(
     val title: String,
     val content: String,
     val isDraft: Boolean,
-    val createdAt: String,
-    val updatedAt: String,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
     val user: UserDto? = null,
 )
 
@@ -22,7 +23,6 @@ data class StoryCreatedDto(
 
 @Serializable
 data class StoryUpdateDto(
-    val id: Long,
     val title: String,
     val content: String,
     val isDraft: Boolean

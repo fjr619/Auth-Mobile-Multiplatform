@@ -13,8 +13,8 @@ fun User.toDto(): UserDto {
         fullName = this.fullName,
         avatar = this.avatar,
         email = this.email,
-        createdAt = this.createdAt.toString(),
-        updatedAt = this.updatedAt.toString(),
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt,
     )
 }
 

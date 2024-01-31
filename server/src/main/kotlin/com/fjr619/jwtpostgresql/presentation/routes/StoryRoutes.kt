@@ -12,11 +12,17 @@ import com.fjr619.jwtpostgresql.domain.service.user.UserService
 import com.fjr619.jwtpostgresql.presentation.error.getEmail
 import com.fjr619.jwtpostgresql.presentation.error.getUserId
 import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
+import com.fjr619.jwtpostgresql.presentation.swagger.swaggerDeleteStory
+import com.fjr619.jwtpostgresql.presentation.swagger.swaggerGetById
+import com.fjr619.jwtpostgresql.presentation.swagger.swaggerCreateStory
+import com.fjr619.jwtpostgresql.presentation.swagger.swaggerGetStory
+import com.fjr619.jwtpostgresql.presentation.swagger.swaggerUpdateStory
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapBoth
 import io.github.smiley4.ktorswaggerui.dsl.delete
 import io.github.smiley4.ktorswaggerui.dsl.get
+import io.github.smiley4.ktorswaggerui.dsl.post
 import io.github.smiley4.ktorswaggerui.dsl.put
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -24,12 +30,11 @@ import io.ktor.server.application.call
 import io.ktor.server.auth.authenticate
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
-import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.inject
 
-private const val ENDPOINT = "api/stories" // Endpoint
+private const val ENDPOINT = "api/story" // Endpoint
 
 fun Application.storyRoutes() {
 
@@ -43,7 +48,7 @@ fun Application.storyRoutes() {
             authenticate {
 
                 //get all my stories api/stories/list?page=1&limit=3
-                get("list") {
+                get("list", { swaggerGetStory() }) {
                     val userId = getUserId()
                     val token = generateToken(tokenConfig, tokenService, userId, getEmail())
 
@@ -52,7 +57,7 @@ fun Application.storyRoutes() {
 
                     storyService.getList(userId, page, limit).andThen {
                         val result = it
-                        val data = result.data.map {
+                        val data = result.list.map {
                             it.toDto()
                         }
                         Ok(PaginatedResult(it.dataCount, it.pageCount, it.nextPage, data))
@@ -72,7 +77,7 @@ fun Application.storyRoutes() {
                 }
 
                 //get story
-                get("{id}") {
+                get("{id}", { swaggerGetById() }) {
                     val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
                     storyService.findById(storyId).mapBoth(
                         success = {
@@ -90,7 +95,7 @@ fun Application.storyRoutes() {
                 }
 
                 //add story
-                post ("/") {
+                post ("", { swaggerCreateStory() }) {
                     val requestBody = call.receive<StoryCreatedDto>()
                     val token = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
 
@@ -111,28 +116,29 @@ fun Application.storyRoutes() {
                 }
 
                 //update story
-                put ("/") {
-                    val requestBody = call.receive<StoryUpdateDto>()
-                    val token: String = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
-
-                    userService.findById(getUserId()).andThen {
-                        storyService.update(it, requestBody)
-                    }.mapBoth(
-                        success = {
-                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                statusCode = HttpStatusCode.OK,
-                                data = it.toDto(),
-                                authToken = token
-                            ).toResponse())
-                        },
-                        failure = {
-                            handleRequestError(it)
-                        }
-                    )
+                put ("{id}", { swaggerUpdateStory() }) {
+                    call.parameters["id"]?.toLong()?.let { id ->
+                        val requestBody = call.receive<StoryUpdateDto>()
+                        val token: String = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
+                        userService.findById(getUserId()).andThen { user ->
+                            storyService.update(user, id, requestBody)
+                        }.mapBoth(
+                            success = {
+                                call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                    statusCode = HttpStatusCode.OK,
+                                    data = it.toDto(),
+                                    authToken = token
+                                ).toResponse())
+                            },
+                            failure = {
+                                handleRequestError(it)
+                            }
+                        )
+                    }
                 }
 
                 //delete story
-                delete("{id}") {
+                delete("{id}", { swaggerDeleteStory() }) {
                     val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
                     val userId = getUserId()
                     val token: String = generateToken(tokenConfig, tokenService, userId, getEmail())
