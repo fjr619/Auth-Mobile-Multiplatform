@@ -16,7 +16,8 @@ fun Story.toDto() = StoryDto(
     title = this.title,
     content = this.content,
     isDraft = this.isDraft,
-    createdAt = this.createdAt
+    createdAt = this.createdAt.toString(),
+    updatedAt = this.updatedAt.toString()
 )
 
 fun StoryCreatedDto.toStory() = Story(
@@ -40,6 +41,8 @@ fun ResultRow?.toStory(isWithUser: Boolean = false): Story? {
         content = this[StoryTable.content],
         isDraft = this[StoryTable.isDraft],
         createdAt  = this[StoryTable.createdAt].toString().toLocalDateTime(),
+        updatedAt = this[StoryTable.updateAt].toString().toLocalDateTime(),
+        deleted = this[StoryTable.deleted],
         user = if (isWithUser) this.toUser() else null
     )
 }

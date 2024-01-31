@@ -1,6 +1,7 @@
 package com.fjr619.jwtpostgresql.domain.model.dto
 
 import com.fjr619.jwtpostgresql.domain.model.User
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 /**
@@ -12,6 +13,8 @@ data class UserDto(
     val fullName: String,
     val avatar: String,
     val email: String,
+    val createdAt: String,
+    val updatedAt: String
 //    var authToken: String? = null,
 //    val role: User.Role = User.Role.USER
 )

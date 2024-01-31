@@ -1,5 +1,6 @@
 package com.fjr619.jwtpostgresql.data.db.schemas
 
+import com.fjr619.jwtpostgresql.base.BaseTable
 import com.fjr619.jwtpostgresql.domain.model.User
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -8,7 +9,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 
-object UserTable : Table("users") {
+object UserTable : BaseTable("users") {
     val id = long(User::id.name).autoIncrement()
 
     //data
@@ -18,15 +19,5 @@ object UserTable : Table("users") {
     val password = text(User::password.name)
     val salt = text(User::salt.name)
     val role = varchar(User::role.name, 256).clientDefault { User.Role.USER.name }
-
-    //metadata
-    val createdAt = datetime(User::createdAt.name).clientDefault {
-        (Clock.System.now().toLocalDateTime(TimeZone.UTC).toJavaLocalDateTime())
-    }
-    val updateAt = datetime(User::updatedAt.name).clientDefault {
-        Clock.System.now().toLocalDateTime(TimeZone.UTC).toJavaLocalDateTime()
-    }
-    val deleted = bool(User::deleted.name).clientDefault { false }
-
     override val primaryKey = PrimaryKey(id)
 }

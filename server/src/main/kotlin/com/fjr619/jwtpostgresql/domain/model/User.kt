@@ -1,6 +1,8 @@
 package com.fjr619.jwtpostgresql.domain.model
 
 
+import com.fjr619.jwtpostgresql.base.BaseEntity
+import com.fjr619.jwtpostgresql.domain.getNowUTC
 import com.fjr619.jwtpostgresql.domain.model.User.Role.ADMIN
 import com.fjr619.jwtpostgresql.domain.model.User.Role.USER
 import kotlinx.datetime.Clock
@@ -21,11 +23,10 @@ data class User(
     val salt: String = "",
     val role: Role = USER,
 
-    //metadata
-    val createdAt: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
-    val updatedAt: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.UTC),
-    val deleted: Boolean = false
-) {
+    override val createdAt: LocalDateTime = getNowUTC(),
+    override val updatedAt: LocalDateTime = getNowUTC(),
+    override val deleted: Boolean = false
+    ) : BaseEntity() {
 
     /**
      * Companion object
@@ -45,8 +46,4 @@ data class User(
     enum class Role {
         USER, ADMIN
     }
-}
-
-fun LocalDateTime.convertTimeZone(zone: TimeZone): LocalDateTime {
-    return this.toInstant(TimeZone.UTC).toLocalDateTime(zone)
 }

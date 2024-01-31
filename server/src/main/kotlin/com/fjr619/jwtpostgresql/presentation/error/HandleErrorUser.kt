@@ -15,12 +15,47 @@ suspend fun PipelineContext<Unit, ApplicationCall>.handleRequestError(
 ) {
     when (error) {
         // Users
-        is RequestError.BadRequest -> call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(message = error.message).toResponse())
-        is RequestError.NotFound -> call.respond(HttpStatusCode.NotFound, BaseResponse.ErrorResponse(message = error.message).toResponse())
-        is RequestError.Unauthorized -> call.respond(HttpStatusCode.Unauthorized, BaseResponse.ErrorResponse(message = error.message).toResponse())
-        is RequestError.Forbidden -> call.respond(HttpStatusCode.Forbidden, BaseResponse.ErrorResponse(message = error.message).toResponse())
-        is RequestError.BadCredentials -> call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(message = error.message).toResponse())
-        is RequestError.BadRole -> call.respond(HttpStatusCode.Forbidden, BaseResponse.ErrorResponse(message = error.message).toResponse())
+        is RequestError.BadRequest -> call.respond(
+            HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.BadRequest,
+                message = error.message
+            ).toResponse()
+        )
+
+        is RequestError.NotFound -> call.respond(
+            HttpStatusCode.NotFound,
+            BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.NotFound,
+                message = error.message).toResponse()
+        )
+
+        is RequestError.Unauthorized -> call.respond(
+            HttpStatusCode.Unauthorized,
+            BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.Unauthorized,
+                message = error.message).toResponse()
+        )
+
+        is RequestError.Forbidden -> call.respond(
+            HttpStatusCode.Forbidden,
+            BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.Forbidden,
+                message = error.message).toResponse()
+        )
+
+        is RequestError.BadCredentials -> call.respond(
+            HttpStatusCode.BadRequest,
+            BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.BadRequest,
+                message = error.message).toResponse()
+        )
+
+        is RequestError.BadRole -> call.respond(
+            HttpStatusCode.Forbidden,
+            BaseResponse.ErrorResponse(
+                statusCode = HttpStatusCode.Forbidden,
+                message = error.message).toResponse()
+        )
     }
 }
 

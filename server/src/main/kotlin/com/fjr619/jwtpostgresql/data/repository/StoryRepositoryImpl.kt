@@ -1,17 +1,26 @@
 package com.fjr619.jwtpostgresql.data.repository
 
+import com.fjr619.jwtpostgresql.base.BaseTable
 import com.fjr619.jwtpostgresql.base.statement.updateReturning
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.data.db.schemas.StoryTable
 import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
+import com.fjr619.jwtpostgresql.domain.getNowUTC
 import com.fjr619.jwtpostgresql.domain.model.Story
 import com.fjr619.jwtpostgresql.domain.model.mapper.toStory
 import com.fjr619.jwtpostgresql.domain.repository.StoryRepository
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import mu.KLogger
+import org.jetbrains.exposed.sql.Expression
+import org.jetbrains.exposed.sql.QueryBuilder
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
-import org.jetbrains.exposed.sql.update
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -31,11 +40,12 @@ class StoryRepositoryImpl(
         }
     }
 
-    override suspend fun save(userId: Long, entity: Story): Story? = if (entity.id == Story.NEW_STORY) {
-        create(userId, entity)
-    } else {
-        update(userId, entity)
-    }
+    override suspend fun save(userId: Long, entity: Story): Story? =
+        if (entity.id == Story.NEW_STORY) {
+            create(userId, entity)
+        } else {
+            update(userId, entity)
+        }
 
     private suspend fun create(userId: Long, entity: Story): Story? {
         var statement: InsertStatement<Number>? = null
@@ -52,14 +62,17 @@ class StoryRepositoryImpl(
 
 
     private suspend fun update(userId: Long, entity: Story): Story? {
-       return databaseFactory.dbQuery {
+        return databaseFactory.dbQuery {
             StoryTable.updateReturning(
-                where = { StoryTable.id eq entity.id },
+                where = {
+                    (StoryTable.id eq entity.id) and (StoryTable.userId eq userId)
+                },
                 body = {
                     it[StoryTable.userId] = userId
                     it[title] = entity.title
                     it[content] = entity.content
                     it[isDraft] = entity.isDraft
+                    it[updateAt] = getNowUTC().toJavaLocalDateTime()
                 }
             ).map {
                 it.toStory(isWithUser = false)

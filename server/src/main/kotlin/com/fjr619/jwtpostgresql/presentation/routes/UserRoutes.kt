@@ -24,6 +24,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import kotlinx.datetime.toLocalDateTime
 import org.koin.ktor.ext.inject
 
 private const val ENDPOINT = "api/users" // Endpoint
@@ -44,7 +45,7 @@ fun Application.userRoutes() {
                     body<UserCreateDto> {}
                 }
                 response {
-                    HttpStatusCode.OK to {
+                    HttpStatusCode.Created to {
                         body<ServiceResultSerializer.ServiceResultSurrogate<UserDto>> {
                             example(
                                 "SUCCESS", ServiceResultSerializer.ServiceResultSurrogate(
@@ -53,7 +54,9 @@ fun Application.userRoutes() {
                                         id = 14,
                                         fullName = "Full Name",
                                         avatar = "Avatar",
-                                        email = "aaa6@aaa.com"
+                                        email = "aaa6@aaa.com",
+                                        createdAt = "2024-01-31T04:22:20.513363",
+                                        updatedAt = "2024-01-31T04:22:20.513363"
                                     ),
                                     statusCode = 201
                                 )
@@ -109,7 +112,6 @@ fun Application.userRoutes() {
                         )
                     }
                 }
-
                 response {
                     HttpStatusCode.OK to {
                         body<ServiceResultSerializer.ServiceResultSurrogate<UserDto>> {
@@ -121,6 +123,8 @@ fun Application.userRoutes() {
                                         fullName = "Full Name",
                                         avatar = "Avatar",
                                         email = "aaa6@aaa.com",
+                                        createdAt = "2024-01-31T04:22:20.513363",
+                                        updatedAt = "2024-01-31T04:22:20.513363"
                                     ),
                                     statusCode = 200
                                 )
@@ -175,7 +179,10 @@ fun Application.userRoutes() {
                 }
 
                 //test admin scoope
-                get("me/admin") {
+                get("me/admin", {
+                    tags = listOf("USER")
+                    securitySchemeNames = setOf("JWT-Auth")
+                }) {
                     val userId = getUserId()
                     userService.isAdmin(userId).mapBoth(
                         success = {
