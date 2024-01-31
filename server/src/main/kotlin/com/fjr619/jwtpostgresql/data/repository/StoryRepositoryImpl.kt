@@ -1,22 +1,15 @@
 package com.fjr619.jwtpostgresql.data.repository
 
-import com.fjr619.jwtpostgresql.base.BaseTable
 import com.fjr619.jwtpostgresql.base.statement.updateReturning
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.data.db.schemas.StoryTable
 import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
 import com.fjr619.jwtpostgresql.domain.getNowUTC
-import com.fjr619.jwtpostgresql.domain.model.Story
+import com.fjr619.jwtpostgresql.domain.model.entity.Story
 import com.fjr619.jwtpostgresql.domain.model.mapper.toStory
 import com.fjr619.jwtpostgresql.domain.repository.StoryRepository
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
 import mu.KLogger
-import org.jetbrains.exposed.sql.Expression
-import org.jetbrains.exposed.sql.QueryBuilder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll

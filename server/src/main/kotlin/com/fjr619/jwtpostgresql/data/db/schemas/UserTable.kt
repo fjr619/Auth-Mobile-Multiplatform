@@ -1,13 +1,7 @@
 package com.fjr619.jwtpostgresql.data.db.schemas
 
 import com.fjr619.jwtpostgresql.base.BaseTable
-import com.fjr619.jwtpostgresql.domain.model.User
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.datetime
+import com.fjr619.jwtpostgresql.domain.model.entity.User
 
 object UserTable : BaseTable("users") {
     val id = long(User::id.name).autoIncrement()

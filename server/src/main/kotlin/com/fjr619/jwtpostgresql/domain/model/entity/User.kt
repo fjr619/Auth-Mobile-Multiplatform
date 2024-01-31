@@ -1,15 +1,11 @@
-package com.fjr619.jwtpostgresql.domain.model
+package com.fjr619.jwtpostgresql.domain.model.entity
 
 
 import com.fjr619.jwtpostgresql.base.BaseEntity
 import com.fjr619.jwtpostgresql.domain.getNowUTC
-import com.fjr619.jwtpostgresql.domain.model.User.Role.ADMIN
-import com.fjr619.jwtpostgresql.domain.model.User.Role.USER
-import kotlinx.datetime.Clock
+import com.fjr619.jwtpostgresql.domain.model.entity.User.Role.ADMIN
+import com.fjr619.jwtpostgresql.domain.model.entity.User.Role.USER
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
 
 
 data class User(
@@ -26,7 +22,7 @@ data class User(
     override val createdAt: LocalDateTime = getNowUTC(),
     override val updatedAt: LocalDateTime = getNowUTC(),
     override val deleted: Boolean = false
-    ) : BaseEntity() {
+    ) : BaseEntity {
 
     /**
      * Companion object

@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.domain.repository
 
-import com.fjr619.jwtpostgresql.domain.model.User
+import com.fjr619.jwtpostgresql.domain.model.entity.User
 
 interface UserRepository {
     suspend fun findByEmail(email: String): User?

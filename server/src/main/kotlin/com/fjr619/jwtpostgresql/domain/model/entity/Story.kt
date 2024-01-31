@@ -1,14 +1,11 @@
-package com.fjr619.jwtpostgresql.domain.model
+package com.fjr619.jwtpostgresql.domain.model.entity
 
 import com.fjr619.jwtpostgresql.base.BaseEntity
 import com.fjr619.jwtpostgresql.domain.getNowUTC
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 data class Story(
-    val id: Long = Story.NEW_STORY,
+    val id: Long = NEW_STORY,
     val user: User? = null,
     val title: String,
     val content: String,
@@ -17,7 +14,7 @@ data class Story(
     override val createdAt: LocalDateTime = getNowUTC(),
     override val updatedAt: LocalDateTime = getNowUTC(),
     override val deleted: Boolean = false
-): BaseEntity() {
+): BaseEntity {
     companion object {
         const val NEW_STORY = -1L
     }

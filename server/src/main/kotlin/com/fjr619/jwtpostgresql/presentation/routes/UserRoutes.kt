@@ -2,7 +2,7 @@ package com.fjr619.jwtpostgresql.presentation.routes
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import com.fjr619.jwtpostgresql.base.ServiceResultSerializer
-import com.fjr619.jwtpostgresql.domain.model.User
+import com.fjr619.jwtpostgresql.domain.model.entity.User
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
@@ -24,7 +24,6 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import kotlinx.datetime.toLocalDateTime
 import org.koin.ktor.ext.inject
 
 private const val ENDPOINT = "api/users" // Endpoint

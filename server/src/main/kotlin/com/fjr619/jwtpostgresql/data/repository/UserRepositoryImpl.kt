@@ -3,7 +3,7 @@ package com.fjr619.jwtpostgresql.data.repository
 import com.fjr619.jwtpostgresql.data.db.DatabaseFactory
 import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
 import com.fjr619.jwtpostgresql.domain.model.mapper.toUser
-import com.fjr619.jwtpostgresql.domain.model.User
+import com.fjr619.jwtpostgresql.domain.model.entity.User
 import com.fjr619.jwtpostgresql.domain.repository.UserRepository
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash

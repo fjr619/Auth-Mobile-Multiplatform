@@ -1,9 +1,7 @@
 package com.fjr619.jwtpostgresql.domain.model.mapper
 
 import com.fjr619.jwtpostgresql.data.db.schemas.StoryTable
-import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
-import com.fjr619.jwtpostgresql.domain.model.Story
-import com.fjr619.jwtpostgresql.domain.model.User
+import com.fjr619.jwtpostgresql.domain.model.entity.Story
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryDto
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
