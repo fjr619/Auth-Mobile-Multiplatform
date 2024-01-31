@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PaginatedResult<T>(
+    val dataCount: Long,
     val pageCount: Long,
     val nextPage: Long?,
     val data: List<T>

@@ -20,6 +20,7 @@ class StoryServiceImpl(
     private val storyRepository: StoryRepository,
 ): StoryService {
     override suspend fun findById(id: Long): Result<Story, RequestError> {
+        if (id == -1L) return Err(RequestError.NotFound(NOT_FOUND))
         return storyRepository.findById(id)?.let {
             Ok(it)
         } ?: Err(RequestError.NotFound(NOT_FOUND))
@@ -47,5 +48,14 @@ class StoryServiceImpl(
         limit: Int
     ): Result<PaginatedResult<Story>, RequestError> {
         return Ok(storyRepository.getList(userId, page, limit))
+    }
+
+    override suspend fun delete(userId: Long, id: Long): Result<Boolean, RequestError> {
+        if (id == -1L) return Err(RequestError.NotFound(NOT_FOUND))
+        return if (storyRepository.delete(userId, id)) {
+            Ok(true)
+        } else {
+            Err(RequestError.NotFound(NOT_FOUND))
+        }
     }
 }

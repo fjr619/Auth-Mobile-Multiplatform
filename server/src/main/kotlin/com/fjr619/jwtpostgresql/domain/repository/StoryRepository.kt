@@ -7,4 +7,6 @@ interface StoryRepository {
     suspend fun findById(id: Long): Story?
     suspend fun save(userId: Long, entity: Story): Story?
     suspend fun getList(userId: Long, page: Int, limit: Int = 10): PaginatedResult<Story>
+
+    suspend fun delete(userId: Long, id: Long): Boolean
 }

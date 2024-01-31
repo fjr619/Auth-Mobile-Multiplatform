@@ -55,7 +55,7 @@ fun Application.storyRoutes() {
                         val data = result.data.map {
                             it.toDto()
                         }
-                        Ok(PaginatedResult(it.pageCount, it.nextPage, data))
+                        Ok(PaginatedResult(it.dataCount, it.pageCount, it.nextPage, data))
                     }.mapBoth(
                         success = {
                             call.respond(HttpStatusCode.OK,
@@ -122,6 +122,26 @@ fun Application.storyRoutes() {
                             call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
                                 statusCode = HttpStatusCode.OK,
                                 data = it.toDto(),
+                                authToken = token
+                            ).toResponse())
+                        },
+                        failure = {
+                            handleRequestError(it)
+                        }
+                    )
+                }
+
+                //delete story
+                delete("{id}") {
+                    val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
+                    val userId = getUserId()
+                    val token: String = generateToken(tokenConfig, tokenService, userId, getEmail())
+
+                    storyService.delete(userId, storyId).mapBoth(
+                        success = {
+                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                statusCode = HttpStatusCode.OK,
+                                data = it,
                                 authToken = token
                             ).toResponse())
                         },

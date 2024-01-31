@@ -15,4 +15,6 @@ interface StoryService {
     suspend fun update(user: User, params: StoryUpdateDto): Result<Story, RequestError>
 
     suspend fun getList(userId: Long, page: Int, limit: Int): Result<PaginatedResult<Story>, RequestError>
+
+    suspend fun delete(userId: Long, id: Long): Result<Boolean, RequestError>
 }

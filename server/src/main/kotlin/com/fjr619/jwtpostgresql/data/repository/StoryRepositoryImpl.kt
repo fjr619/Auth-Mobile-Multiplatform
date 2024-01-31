@@ -16,6 +16,7 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement
+import org.jetbrains.exposed.sql.update
 import org.koin.core.annotation.Singleton
 import kotlin.math.ceil
 import kotlin.math.roundToLong
@@ -47,15 +48,17 @@ class StoryRepositoryImpl(
     override suspend fun getList(userId: Long, page: Int, limit: Int): PaginatedResult<Story> {
         var pageCount: Long = 0
         var nextPage: Long? = null
+        var dataCount: Long = 0
 
         val stories = databaseFactory.dbQuery {
             (UserTable innerJoin StoryTable)
                 .selectAll()
                 .where {
-                    (StoryTable.userId eq userId)
+                    (StoryTable.userId eq userId) and (StoryTable.deleted eq false)
                 }.orderBy(StoryTable.createdAt, SortOrder.DESC)
                 .also {
-                    pageCount = ceil((it.count().toDouble() / limit.toDouble())).toLong()
+                    dataCount = it.count()
+                    pageCount = ceil((dataCount.toDouble() / limit.toDouble())).toLong()
                     if (page < pageCount) {
                         nextPage = page + 1L
                     }
@@ -65,7 +68,22 @@ class StoryRepositoryImpl(
                 }
         }
 
-        return PaginatedResult(pageCount, nextPage, stories)
+        return PaginatedResult(dataCount, pageCount, nextPage, stories)
+    }
+
+    override suspend fun delete(userId: Long, id: Long): Boolean {
+        val result = databaseFactory.dbQuery {
+            StoryTable.update(
+                where = {
+                    (StoryTable.id eq id) and (StoryTable.userId eq userId)
+                }
+            ) {
+                it[deleted] = true
+                it[updateAt] = getNowUTC().toJavaLocalDateTime()
+            }
+        }
+
+        return result == 1
     }
 
     private suspend fun create(userId: Long, entity: Story): Story? {
