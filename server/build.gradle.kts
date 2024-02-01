@@ -2,12 +2,8 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
     alias(libs.plugins.kotlinx.serialization)
-
-    // KSP for Koin Annotations
-    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
-
-    // Dokka for documentation
-    id("org.jetbrains.dokka") version "1.9.10"
+    alias(libs.plugins.ksp) // KSP for Koin Annotations
+    alias(libs.plugins.dokka) // Dokka for documentation
     application
 }
 
@@ -32,7 +28,7 @@ dependencies {
     implementation(libs.kotlinx.serialization)
 
     // Content Validation
-    implementation("io.ktor:ktor-server-request-validation:2.3.7")
+    implementation(libs.ktor.server.request.validation)
 
     // Server Status Pages
     implementation(libs.ktor.server.status.pages)
@@ -42,10 +38,10 @@ dependencies {
     implementation(libs.ktor.server.auth.jwt)
 
     //Koin
-    implementation ("io.insert-koin:koin-ktor:3.5.3")
-    implementation ("io.insert-koin:koin-logger-slf4j:3.5.3")
-    implementation("io.insert-koin:koin-annotations:1.3.0") // Koin Annotations for KSP
-    ksp("io.insert-koin:koin-ksp-compiler:1.3.0") // Koin KSP Compiler for KSP
+    implementation (libs.koin.ktor)
+    implementation (libs.koin.logger.slf4j)
+    implementation(libs.koin.annotations) // Koin Annotations for KSP
+    ksp(libs.koin.ksp.compiler) // Koin KSP Compiler for KSP
 
     // Database
     implementation(libs.common.codec)
@@ -57,19 +53,36 @@ dependencies {
     implementation(libs.hikari)
 
     // CORS
-    implementation("io.ktor:ktor-server-cors:2.3.7")
+    implementation(libs.ktor.server.cors)
 
     // To generate Swagger UI
-    implementation("io.github.smiley4:ktor-swagger-ui:2.2.0")
+    implementation(libs.ktor.swagger.ui)
 
     // Logging
     implementation(libs.logback)
-    implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
+    implementation(libs.kotlin.logging.jvm)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+    implementation(libs.kotlinx.datetime)
 
-    implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.18")
+    implementation(libs.kotlin.result)
 
+    // *** Testing *** //
+    // Ktor Test
     testImplementation(libs.ktor.server.tests)
+    testImplementation(libs.ktor.server.test.host)
+    implementation(libs.ktor.client.content.negotiation) // For testing with Ktor Client JSON
+    implementation(libs.ktor.client.auth) // For testing with Ktor Client Auth JWT
+
+    // Kotlin Test
     testImplementation(libs.kotlin.test.junit)
+
+    // JUnit 5 instead of JUnit 4
+    testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.junit.jupiter.engine)
+
+    // To test coroutines and suspend functions
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // MockK to test with mocks
+    testImplementation(libs.mockk)
 }
