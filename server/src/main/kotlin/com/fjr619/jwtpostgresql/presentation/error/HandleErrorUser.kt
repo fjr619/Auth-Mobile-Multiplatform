@@ -14,7 +14,6 @@ suspend fun PipelineContext<Unit, ApplicationCall>.handleRequestError(
     error: Any
 ) {
     when (error) {
-        // Users
         is RequestError.BadRequest -> call.respond(
             HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(
                 statusCode = HttpStatusCode.BadRequest,
@@ -57,14 +56,4 @@ suspend fun PipelineContext<Unit, ApplicationCall>.handleRequestError(
                 message = error.message).toResponse()
         )
     }
-}
-
-fun PipelineContext<Unit, ApplicationCall>.getUserId(): Long {
-    return call.principal<JWTPrincipal>()?.payload?.getClaim("userId").toString()
-        .replace("\"", "").toLong()
-}
-
-fun PipelineContext<Unit, ApplicationCall>.getEmail(): String {
-    return call.principal<JWTPrincipal>()?.payload?.getClaim("email").toString()
-        .replace("\"", "").toString()
 }

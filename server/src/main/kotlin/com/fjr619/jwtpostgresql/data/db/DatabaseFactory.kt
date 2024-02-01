@@ -6,9 +6,9 @@ import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.annotation.Singleton
 
@@ -31,8 +31,10 @@ class DatabaseFactory(
 
     private fun hikari(): HikariDataSource {
         val hikariConfig = HikariConfig()
-        hikariConfig.driverClassName = appConfig.applicationConfiguration.propertyOrNull("database.driver")?.getString()
-        hikariConfig.jdbcUrl = appConfig.applicationConfiguration.propertyOrNull("database.jdbcUrl")?.getString()
+        hikariConfig.driverClassName =
+            appConfig.applicationConfiguration.propertyOrNull("database.driver")?.getString()
+        hikariConfig.jdbcUrl =
+            appConfig.applicationConfiguration.propertyOrNull("database.jdbcUrl")?.getString()
         hikariConfig.maximumPoolSize = 3
         hikariConfig.isAutoCommit = false
         hikariConfig.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
@@ -40,9 +42,11 @@ class DatabaseFactory(
         return HikariDataSource(hikariConfig)
     }
 
-    suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
-        transaction {
-            block()
-        }
-    }
+//        suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
+//            transaction {
+//                block()
+//            }
+
+    suspend fun <T> dbQuery(block: suspend () -> T): T =
+        newSuspendedTransaction(Dispatchers.IO) { block() }
 }

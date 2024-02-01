@@ -2,21 +2,24 @@ package com.fjr619.jwtpostgresql.presentation.routes
 
 import com.fjr619.jwtpostgresql.base.BaseResponse
 import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
+import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryUpdateDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toDto
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
+import com.fjr619.jwtpostgresql.domain.service.security.token.generateToken
+import com.fjr619.jwtpostgresql.domain.service.security.token.getEmail
+import com.fjr619.jwtpostgresql.domain.service.security.token.getUserId
 import com.fjr619.jwtpostgresql.domain.service.story.StoryService
 import com.fjr619.jwtpostgresql.domain.service.user.UserService
-import com.fjr619.jwtpostgresql.presentation.error.getEmail
-import com.fjr619.jwtpostgresql.presentation.error.getUserId
 import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
+import com.fjr619.jwtpostgresql.presentation.swagger.swaggerCreateStory
 import com.fjr619.jwtpostgresql.presentation.swagger.swaggerDeleteStory
 import com.fjr619.jwtpostgresql.presentation.swagger.swaggerGetById
-import com.fjr619.jwtpostgresql.presentation.swagger.swaggerCreateStory
 import com.fjr619.jwtpostgresql.presentation.swagger.swaggerGetStory
 import com.fjr619.jwtpostgresql.presentation.swagger.swaggerUpdateStory
+import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapBoth
@@ -63,12 +66,14 @@ fun Application.storyRoutes() {
                         Ok(PaginatedResult(it.dataCount, it.pageCount, it.nextPage, data))
                     }.mapBoth(
                         success = {
-                            call.respond(HttpStatusCode.OK,
+                            call.respond(
+                                HttpStatusCode.OK,
                                 BaseResponse.SuccessResponse(
                                     statusCode = HttpStatusCode.OK,
                                     data = it,
                                     authToken = token
-                                ).toResponse())
+                                ).toResponse()
+                            )
                         },
                         failure = {
                             handleRequestError(it)
@@ -79,23 +84,42 @@ fun Application.storyRoutes() {
                 //get story
                 get("{id}", { swaggerGetById() }) {
                     val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
-                    storyService.findById(storyId).mapBoth(
-                        success = {
-                            val token = it.user?.generateToken(tokenConfig, tokenService)
-                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                statusCode = HttpStatusCode.OK,
-                                data = it.toDto(),
-                                authToken = token
-                            ).toResponse())
-                        },
-                        failure = {
-                            handleRequestError(it)
-                        }
-                    )
+                    lateinit var token: String
+
+                    storyService.findById(storyId)
+                        .andThen(
+                            transform = { story ->
+                                story.user?.let { user ->
+                                    token =
+                                        generateToken(
+                                            tokenConfig,
+                                            tokenService,
+                                            user.id,
+                                            user.email
+                                        )
+                                    Ok(story)
+                                } ?: Err(RequestError.NotFound("User Not Found"))
+                            }
+                        )
+                        .mapBoth(
+                            success = {
+                                call.respond(
+                                    HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                        statusCode = HttpStatusCode.OK,
+                                        data = it.toDto(),
+                                        authToken = token
+                                    ).toResponse()
+                                )
+                            },
+                            failure = {
+                                handleRequestError(it)
+
+                            }
+                        )
                 }
 
                 //add story
-                post ("", { swaggerCreateStory() }) {
+                post("", { swaggerCreateStory() }) {
                     val requestBody = call.receive<StoryCreatedDto>()
                     val token = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
 
@@ -103,11 +127,13 @@ fun Application.storyRoutes() {
                         storyService.add(it, requestBody)
                     }.mapBoth(
                         success = {
-                            call.respond(HttpStatusCode.Created, BaseResponse.SuccessResponse(
-                                statusCode = HttpStatusCode.Created,
-                                data = it.toDto(),
-                                authToken = token
-                            ).toResponse())
+                            call.respond(
+                                HttpStatusCode.Created, BaseResponse.SuccessResponse(
+                                    statusCode = HttpStatusCode.Created,
+                                    data = it.toDto(),
+                                    authToken = token
+                                ).toResponse()
+                            )
                         },
                         failure = {
                             handleRequestError(it)
@@ -116,19 +142,22 @@ fun Application.storyRoutes() {
                 }
 
                 //update story
-                put ("{id}", { swaggerUpdateStory() }) {
+                put("{id}", { swaggerUpdateStory() }) {
                     call.parameters["id"]?.toLong()?.let { id ->
                         val requestBody = call.receive<StoryUpdateDto>()
-                        val token: String = generateToken(tokenConfig, tokenService, getUserId(), getEmail())
+                        val token: String =
+                            generateToken(tokenConfig, tokenService, getUserId(), getEmail())
                         userService.findById(getUserId()).andThen { user ->
                             storyService.update(user, id, requestBody)
                         }.mapBoth(
                             success = {
-                                call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                    statusCode = HttpStatusCode.OK,
-                                    data = it.toDto(),
-                                    authToken = token
-                                ).toResponse())
+                                call.respond(
+                                    HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                        statusCode = HttpStatusCode.OK,
+                                        data = it.toDto(),
+                                        authToken = token
+                                    ).toResponse()
+                                )
                             },
                             failure = {
                                 handleRequestError(it)
@@ -145,11 +174,13 @@ fun Application.storyRoutes() {
 
                     storyService.delete(userId, storyId).mapBoth(
                         success = {
-                            call.respond(HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                statusCode = HttpStatusCode.OK,
-                                data = it,
-                                authToken = token
-                            ).toResponse())
+                            call.respond(
+                                HttpStatusCode.OK, BaseResponse.SuccessResponse(
+                                    statusCode = HttpStatusCode.OK,
+                                    data = it,
+                                    authToken = token
+                                ).toResponse()
+                            )
                         },
                         failure = {
                             handleRequestError(it)

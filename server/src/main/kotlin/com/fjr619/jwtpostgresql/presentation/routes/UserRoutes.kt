@@ -8,6 +8,7 @@ import com.fjr619.jwtpostgresql.domain.model.mapper.toDto
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenClaim
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
+import com.fjr619.jwtpostgresql.domain.service.security.token.generateToken
 import com.fjr619.jwtpostgresql.domain.service.user.UserService
 import com.fjr619.jwtpostgresql.presentation.error.handleRequestError
 import com.fjr619.jwtpostgresql.presentation.swagger.swaggerLogin
@@ -39,7 +40,7 @@ fun Application.userRoutes() {
                 userService.save(dto)
                     .mapBoth(
                         success = {
-                            val token = it.generateToken(tokenConfig, tokenService)
+                            val token = generateToken(tokenConfig, tokenService, it.id, it.email)
                             call.respond(
                                 HttpStatusCode.Created, BaseResponse.SuccessResponse(
                                     statusCode = HttpStatusCode.Created,
@@ -58,7 +59,7 @@ fun Application.userRoutes() {
                 val dto = call.receive<UserLoginDto>()
                 userService.checkUserNameAndPassword(dto).mapBoth(
                     success = {
-                        val token = it.generateToken(tokenConfig, tokenService)
+                        val token = generateToken(tokenConfig, tokenService, it.id, it.email)
                         call.respond(
                             HttpStatusCode.OK, BaseResponse.SuccessResponse(
                                 statusCode = HttpStatusCode.OK,
@@ -96,41 +97,4 @@ fun Application.userRoutes() {
         }
 
     }
-}
-
-fun User.generateToken(tokenConfig: TokenConfig, tokenService: TokenService): String {
-    return tokenService.generate(
-        config = tokenConfig,
-        claims = arrayOf(
-            TokenClaim(
-                name = "userId",
-                value = this.id.toString()
-            ),
-            TokenClaim(
-                name = "email",
-                value = this.email
-            )
-        )
-    )
-}
-
-fun generateToken(
-    tokenConfig: TokenConfig,
-    tokenService: TokenService,
-    userId: Long,
-    email: String
-): String {
-    return tokenService.generate(
-        config = tokenConfig,
-        claims = arrayOf(
-            TokenClaim(
-                name = "userId",
-                value = userId.toString()
-            ),
-            TokenClaim(
-                name = "email",
-                value = email
-            )
-        )
-    )
 }
