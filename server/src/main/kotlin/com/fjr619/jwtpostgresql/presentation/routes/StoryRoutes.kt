@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.routes
 
-import com.fjr619.jwtpostgresql.base.BaseResponse
+import data.Response
 import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
@@ -68,10 +68,10 @@ fun Application.storyRoutes() {
                         success = {
                             call.respond(
                                 HttpStatusCode.OK,
-                                BaseResponse.SuccessResponse(
-                                    statusCode = HttpStatusCode.OK,
+                                Response.SuccessResponse(
+                                    statusCode = HttpStatusCode.OK.value,
                                     data = it,
-                                    authToken = token
+                                    token = token
                                 ).toResponse()
                             )
                         },
@@ -104,10 +104,10 @@ fun Application.storyRoutes() {
                         .mapBoth(
                             success = {
                                 call.respond(
-                                    HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                        statusCode = HttpStatusCode.OK,
+                                    HttpStatusCode.OK, Response.SuccessResponse(
+                                        statusCode = HttpStatusCode.OK.value,
                                         data = it.toDto(),
-                                        authToken = token
+                                        token = token
                                     ).toResponse()
                                 )
                             },
@@ -128,10 +128,10 @@ fun Application.storyRoutes() {
                     }.mapBoth(
                         success = {
                             call.respond(
-                                HttpStatusCode.Created, BaseResponse.SuccessResponse(
-                                    statusCode = HttpStatusCode.Created,
+                                HttpStatusCode.Created, Response.SuccessResponse(
+                                    statusCode = HttpStatusCode.Created.value,
                                     data = it.toDto(),
-                                    authToken = token
+                                    token = token
                                 ).toResponse()
                             )
                         },
@@ -152,10 +152,10 @@ fun Application.storyRoutes() {
                         }.mapBoth(
                             success = {
                                 call.respond(
-                                    HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                        statusCode = HttpStatusCode.OK,
+                                    HttpStatusCode.OK, Response.SuccessResponse(
+                                        statusCode = HttpStatusCode.OK.value,
                                         data = it.toDto(),
-                                        authToken = token
+                                        token = token
                                     ).toResponse()
                                 )
                             },
@@ -175,10 +175,10 @@ fun Application.storyRoutes() {
                     storyService.delete(userId, storyId).mapBoth(
                         success = {
                             call.respond(
-                                HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                    statusCode = HttpStatusCode.OK,
+                                HttpStatusCode.OK, Response.SuccessResponse(
+                                    statusCode = HttpStatusCode.OK.value,
                                     data = it,
-                                    authToken = token
+                                    token = token
                                 ).toResponse()
                             )
                         },

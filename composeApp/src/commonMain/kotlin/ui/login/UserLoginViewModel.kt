@@ -2,6 +2,7 @@ package ui.login
 
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import com.rickclephas.kmm.viewmodel.coroutineScope
+import data.Response
 import domain.usecase.UserLoginUseCase
 import kotlinx.coroutines.launch
 
@@ -11,12 +12,11 @@ class UserLoginViewModel(
 
     fun login() {
         viewModelScope.coroutineScope.launch {
-            loginUseCase.invoke()
-                .onSuccess {
-                    println("aaa ini sukses - $it")
-                }
-                .onFailure {
-                    println("aaa ini gagal- ${it.message}")
+            val response = loginUseCase.invoke()
+                if (response is Response.SuccessResponse) {
+                    println("aaa ini sukses - $response")
+                }else {
+                    println("aaa ini error - $response")
                 }
         }
     }

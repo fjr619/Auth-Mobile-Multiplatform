@@ -1,7 +1,5 @@
-package com.fjr619.jwtpostgresql.base
+package data
 
-import io.ktor.http.HttpStatusCode
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -11,24 +9,18 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import mu.KLogger
-import mu.KotlinLogging
-import org.koin.java.KoinJavaComponent
-
-private val logger = KotlinLogging.logger {}
-
 
 //https://stackoverflow.com/a/71860558
 class ServiceResultSerializer<T : Any>(
     tSerializer: KSerializer<T>
-) : KSerializer<BaseResponse<T>> {
+) : KSerializer<Response<T>> {
 
 //    val logger = KoinJavaComponent.inject<KLogger>(KLogger::class.java).value
 
     @Serializable
     @SerialName("BaseResponse")
     data class ServiceResultSurrogate<T : Any> @OptIn(ExperimentalSerializationApi::class) constructor(
-        val type: Type,
+        val type: Response.Type,
         // The annotation is not necessary, but it avoids serializing "data = null"
         // for "Error" results.
         @EncodeDefault(EncodeDefault.Mode.NEVER)
@@ -39,44 +31,55 @@ class ServiceResultSerializer<T : Any>(
         val statusCode: Int = -1,
         val token: String? = null
     ) {
-        enum class Type { SUCCESS, ERROR }
+
     }
 
     private val surrogateSerializer = ServiceResultSurrogate.serializer(tSerializer)
 
     override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
-    override fun deserialize(decoder: Decoder): BaseResponse<T> {
+    override fun deserialize(decoder: Decoder): Response<T> {
         val surrogate = surrogateSerializer.deserialize(decoder)
         return when (surrogate.type) {
-            ServiceResultSurrogate.Type.SUCCESS ->
+            Response.Type.SUCCESS ->
                 if (surrogate.data != null)
-                    BaseResponse.SuccessResponse(surrogate.data)
+                    Response.SuccessResponse(
+                        data = surrogate.data,
+                        type = surrogate.type,
+                        message = surrogate.message,
+                        token = surrogate.token,
+                        statusCode = surrogate.statusCode
+                    )
                 else
                     throw SerializationException("Missing data for successful result")
 
-            ServiceResultSurrogate.Type.ERROR ->
-                BaseResponse.ErrorResponse(message = surrogate.message)
+            Response.Type.ERROR ->
+                Response.ErrorResponse(
+                    type = surrogate.type,
+                    message = surrogate.message,
+                    token = surrogate.token,
+                    statusCode = surrogate.statusCode
+                )
         }
     }
 
-    override fun serialize(encoder: Encoder, value: BaseResponse<T>) {
+    override fun serialize(encoder: Encoder, value: Response<T>) {
         val surrogate = when (value) {
-            is BaseResponse.ErrorResponse -> {
+            is Response.ErrorResponse -> {
                 ServiceResultSurrogate(
-                    ServiceResultSurrogate.Type.ERROR,
+                    type = Response.Type.ERROR,
                     message = value.message,
-                    statusCode = value.statusCode.value,
-                    token = value.authToken
+                    statusCode = value.statusCode,
+                    token = value.token
                 )
             }
 
-            is BaseResponse.SuccessResponse -> {
+            is Response.SuccessResponse -> {
                 ServiceResultSurrogate(
-                    ServiceResultSurrogate.Type.SUCCESS,
+                    type = Response.Type.SUCCESS,
                     data = value.data,
-                    statusCode = value.statusCode.value,
-                    token = value.authToken
+                    statusCode = value.statusCode,
+                    token = value.token
                 )
             }
         }

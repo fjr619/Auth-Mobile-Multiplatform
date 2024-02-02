@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.plugin
 
-import com.fjr619.jwtpostgresql.base.BaseResponse
+import data.Response
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -35,10 +35,11 @@ fun Application.configureExceptions() {
         exception<Exception> { call, exception ->
             when(exception) {
                 is RequestValidationException -> {
-                    call.respond(HttpStatusCode.BadRequest, BaseResponse.ErrorResponse(
-                        statusCode = HttpStatusCode.BadRequest,
+                    call.respond(HttpStatusCode.BadRequest, Response.ErrorResponse(
+                        statusCode = HttpStatusCode.BadRequest.value,
                         message = exception.reasons.joinToString()
-                    ) as BaseResponse<Nothing>)
+                    ) as Response<Nothing>
+                    )
                 }
             }
         }
@@ -50,8 +51,8 @@ fun Application.configureExceptions() {
             HttpStatusCode.BadGateway,
             HttpStatusCode.Unauthorized
         ) { call, statusCode ->
-            val message: BaseResponse<Nothing> = BaseResponse.ErrorResponse(
-                statusCode = statusCode,
+            val message: Response<Nothing> = Response.ErrorResponse(
+                statusCode = statusCode.value,
                 message = when (statusCode) {
                     HttpStatusCode.InternalServerError -> "Oops! internal server error at our end"
                     HttpStatusCode.BadGateway -> "Oops! We got a bad gateway. Fixing it. Hold on!"

@@ -1,6 +1,7 @@
 package com.fjr619.jwtpostgresql.presentation.swagger
 
-import com.fjr619.jwtpostgresql.base.ServiceResultSerializer
+import data.Response
+import data.ServiceResultSerializer
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
@@ -15,7 +16,7 @@ fun OpenApiResponses.failure() {
         body<ServiceResultSerializer.ServiceResultSurrogate<Nothing>> {
             example(
                 "Error", ServiceResultSerializer.ServiceResultSurrogate(
-                    type = ServiceResultSerializer.ServiceResultSurrogate.Type.ERROR,
+                    type = Response.Type.ERROR,
                     data = null,
                     message = "error message",
                     statusCode = 400,

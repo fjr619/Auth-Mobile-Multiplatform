@@ -1,11 +1,9 @@
 package com.fjr619.jwtpostgresql.presentation.routes
 
-import com.fjr619.jwtpostgresql.base.BaseResponse
+import data.Response
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
-import com.fjr619.jwtpostgresql.domain.model.entity.User
 import com.fjr619.jwtpostgresql.domain.model.mapper.toDto
-import com.fjr619.jwtpostgresql.domain.service.security.token.TokenClaim
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenConfig
 import com.fjr619.jwtpostgresql.domain.service.security.token.TokenService
 import com.fjr619.jwtpostgresql.domain.service.security.token.generateToken
@@ -42,10 +40,10 @@ fun Application.userRoutes() {
                         success = {
                             val token = generateToken(tokenConfig, tokenService, it.id, it.email)
                             call.respond(
-                                HttpStatusCode.Created, BaseResponse.SuccessResponse(
-                                    statusCode = HttpStatusCode.Created,
+                                HttpStatusCode.Created, Response.SuccessResponse(
+                                    statusCode = HttpStatusCode.Created.value,
                                     data = it.toDto(),
-                                    authToken = token
+                                    token = token
                                 ).toResponse()
                             )
                         },
@@ -61,10 +59,10 @@ fun Application.userRoutes() {
                     success = {
                         val token = generateToken(tokenConfig, tokenService, it.id, it.email)
                         call.respond(
-                            HttpStatusCode.OK, BaseResponse.SuccessResponse(
-                                statusCode = HttpStatusCode.OK,
+                            HttpStatusCode.OK, Response.SuccessResponse(
+                                statusCode = HttpStatusCode.OK.value,
                                 data = it.toDto(),
-                                authToken = token
+                                token = token
                             ).toResponse()
                         )
                     },
