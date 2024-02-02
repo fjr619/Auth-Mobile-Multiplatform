@@ -83,7 +83,7 @@ fun Application.storyRoutes() {
 
                 //get story
                 get("{id}", { swaggerGetById() }) {
-                    val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
+                    val storyId = call.parameters["di"]?.toLongOrNull() ?: -1
                     lateinit var token: String
 
                     storyService.findById(storyId)
@@ -143,7 +143,7 @@ fun Application.storyRoutes() {
 
                 //update story
                 put("{id}", { swaggerUpdateStory() }) {
-                    call.parameters["id"]?.toLong()?.let { id ->
+                    call.parameters["di"]?.toLong()?.let { id ->
                         val requestBody = call.receive<StoryUpdateDto>()
                         val token: String =
                             generateToken(tokenConfig, tokenService, getUserId(), getEmail())
@@ -168,7 +168,7 @@ fun Application.storyRoutes() {
 
                 //delete story
                 delete("{id}", { swaggerDeleteStory() }) {
-                    val storyId = call.parameters["id"]?.toLongOrNull() ?: -1
+                    val storyId = call.parameters["di"]?.toLongOrNull() ?: -1
                     val userId = getUserId()
                     val token: String = generateToken(tokenConfig, tokenService, userId, getEmail())
 

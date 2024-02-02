@@ -28,11 +28,15 @@ kotlin {
     }
     
     sourceSets {
-        
+        all {
+            languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
+        }
+
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -42,6 +46,10 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(projects.shared)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
         }
     }
 }

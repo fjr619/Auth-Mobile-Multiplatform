@@ -15,7 +15,7 @@ fun OpenApiRoute.swaggerGetById() {
     securitySchemeNames = setOf("JWT-Auth")
 
     request {
-        pathParameter<Long>("id") {
+        pathParameter<Long>("di") {
             description = "Story id"
             example = 1
         }
@@ -60,7 +60,7 @@ fun OpenApiRoute.swaggerUpdateStory() {
     securitySchemeNames = setOf("JWT-Auth")
 
     request {
-        pathParameter<Long>("id") {
+        pathParameter<Long>("di") {
             description = "Story id"
             example = 1
         }
@@ -89,7 +89,7 @@ fun OpenApiRoute.swaggerDeleteStory() {
     securitySchemeNames = setOf("JWT-Auth")
 
     request {
-        pathParameter<Long>("id") {
+        pathParameter<Long>("di") {
             description = "Story id"
             example = 1
         }

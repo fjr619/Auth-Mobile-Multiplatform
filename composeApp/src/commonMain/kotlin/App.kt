@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.getKoin
+import ui.login.UserLoginViewModel
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -21,8 +23,14 @@ fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val greeting = remember { Greeting().greet() }
+
+        val viewModel: UserLoginViewModel= getKoin().get()
+
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
+            Button(onClick = {
+                showContent = !showContent
+                viewModel.login()
+            }) {
                 Text("Click me!")
             }
             AnimatedVisibility(showContent) {
