@@ -1,4 +1,4 @@
-package com.fjr619.jwtpostgresql.domain.model.dto
+package dto
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
@@ -27,16 +27,6 @@ data class UserCreateDto(
     val email: String,
     val password: String,
     val avatar: String
-)
-
-/**
- * User DTO for request to update a user
- */
-@Serializable
-data class UserUpdateDto(
-    val name: String,
-    val email: String,
-    val username: String,
 )
 
 /**

@@ -1,14 +1,14 @@
 package data.mapper
 
-import data.model.UserDto
-import data.model.UserLoginDto
 import domain.model.User
 import domain.model.UserLogin
+import dto.UserDto
+import dto.UserLoginDto
 
-fun UserDto.toModel() : User = User(
+fun UserDto.toModel(): User = User(
     id, fullName, avatar, email, createdAt, updatedAt
 )
 
-fun UserLogin.toDto() : UserLoginDto = UserLoginDto(
+fun UserLogin.toDto(): UserLoginDto = UserLoginDto(
     email, password
 )

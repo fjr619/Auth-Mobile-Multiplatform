@@ -2,8 +2,8 @@ package com.fjr619.jwtpostgresql.domain.service.user
 
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.entity.User
-import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
+import dto.UserCreateDto
+import dto.UserLoginDto
 import com.github.michaelbull.result.Result
 
 interface UserService {

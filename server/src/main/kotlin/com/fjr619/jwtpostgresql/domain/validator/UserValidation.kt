@@ -1,7 +1,7 @@
 package com.fjr619.jwtpostgresql.domain.validator
 
-import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
+import dto.UserCreateDto
+import dto.UserLoginDto
 import io.ktor.server.plugins.requestvalidation.RequestValidationConfig
 import io.ktor.server.plugins.requestvalidation.ValidationResult
 

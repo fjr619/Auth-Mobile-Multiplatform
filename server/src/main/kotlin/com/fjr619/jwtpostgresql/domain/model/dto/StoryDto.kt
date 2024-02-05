@@ -1,5 +1,6 @@
 package com.fjr619.jwtpostgresql.domain.model.dto
 
+import dto.UserDto
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 

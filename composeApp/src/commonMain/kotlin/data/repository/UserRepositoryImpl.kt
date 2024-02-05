@@ -2,10 +2,10 @@ package data.repository
 
 import Response
 import data.mapper.toModel
-import data.model.UserDto
-import data.model.UserLoginDto
 import domain.model.User
 import domain.repository.UserRepository
+import dto.UserDto
+import dto.UserLoginDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post

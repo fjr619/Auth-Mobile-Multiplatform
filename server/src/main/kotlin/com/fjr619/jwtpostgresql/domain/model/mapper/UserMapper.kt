@@ -2,8 +2,8 @@ package com.fjr619.jwtpostgresql.domain.model.mapper
 
 import com.fjr619.jwtpostgresql.data.db.schemas.UserTable
 import com.fjr619.jwtpostgresql.domain.model.entity.User
-import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserDto
+import dto.UserCreateDto
+import dto.UserDto
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.ResultRow
 

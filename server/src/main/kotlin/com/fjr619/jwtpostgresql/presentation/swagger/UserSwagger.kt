@@ -2,9 +2,9 @@ package com.fjr619.jwtpostgresql.presentation.swagger
 
 import Response
 import ServiceResultSerializer
-import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
+import dto.UserCreateDto
+import dto.UserDto
+import dto.UserLoginDto
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiResponses
 import io.github.smiley4.ktorswaggerui.dsl.OpenApiRoute
 import io.ktor.http.HttpStatusCode
@@ -38,7 +38,8 @@ fun OpenApiRoute.swaggerRegister() {
                 email = "iniemail@user.com",
                 avatar = "ini avatar user",
                 password = "ini password user"
-            ))
+            )
+            )
         }
     }
 

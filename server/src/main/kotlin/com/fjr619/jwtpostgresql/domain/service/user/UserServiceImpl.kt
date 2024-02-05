@@ -7,8 +7,8 @@ import com.fjr619.jwtpostgresql.domain.model.USER_LOGIN_FAILURE
 import com.fjr619.jwtpostgresql.domain.model.USER_NOT_ADMIN
 import com.fjr619.jwtpostgresql.domain.model.NOT_FOUND
 import com.fjr619.jwtpostgresql.domain.model.entity.User
-import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
-import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
+import dto.UserCreateDto
+import dto.UserLoginDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toUser
 import com.fjr619.jwtpostgresql.domain.repository.UserRepository
 import com.github.michaelbull.result.Err
