@@ -12,40 +12,43 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class UserRepositoryImpl (
     private val apiService: HttpClient
 ) : UserRepository {
-    override suspend fun login(): Response<User> {
-        return try {
-            val response = apiService.post("user/login") {
-                contentType(ContentType.Application.Json)
-                setBody(
-                    UserLoginDto(
-                        email = "aaa@aaa.com",
-                        password = "1234"
+    override suspend fun login(): Flow<Response<User>> {
+        return flow {
+            try {
+                val response = apiService.post("user/login") {
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        UserLoginDto(
+                            email = "aaa@aaa.com",
+                            password = "1234"
+                        )
                     )
-                )
-            }
+                }
 
-            val temp: Response<UserDto> = response.body()
+                val temp: Response<UserDto> = response.body()
 
-            temp.data?.let { dto ->
-                Response.SuccessResponse(
-                    data = dto.toModel(),
-                    token = temp.token,
+                emit(temp.data?.let { dto ->
+                    Response.SuccessResponse(
+                        data = dto.toModel(),
+                        token = temp.token,
+                        statusCode = temp.statusCode,
+                        message = temp.message
+                    ).toResponse()
+                } ?: Response.ErrorResponse(
                     statusCode = temp.statusCode,
                     message = temp.message
-                ).toResponse()
-            } ?: Response.ErrorResponse(
-                statusCode = temp.statusCode,
-                message = temp.message
-            ).toResponse()
+                ).toResponse())
 
-        } catch (e: Exception) {
-            println("aaa Exception")
-            Response.ErrorResponse(message = e.message)
+            } catch (e: Exception) {
+                println("aaa Exception")
+                emit(Response.ErrorResponse(message = e.message))
+            }
         }
-
     }
 }
