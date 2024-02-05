@@ -1,7 +1,7 @@
 package com.fjr619.jwtpostgresql.presentation.swagger
 
-import data.Response
-import data.ServiceResultSerializer
+import Response
+import ServiceResultSerializer
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto

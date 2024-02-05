@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.plugin
 
-import data.Response
+import Response
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install

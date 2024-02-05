@@ -1,5 +1,3 @@
-package data
-
 import io.ktor.http.HttpStatusCode
 import kotlinx.serialization.Serializable
 

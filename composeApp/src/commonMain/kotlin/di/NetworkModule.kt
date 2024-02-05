@@ -7,8 +7,12 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
+import io.ktor.http.contentType
+import io.ktor.http.path
+import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
@@ -38,8 +42,8 @@ val networkModule  = module {
 
             defaultRequest {
                 url {
-                    protocol = URLProtocol.HTTP
                     host = "192.168.68.71:8080/api"
+                    contentType(ContentType.Application.Json)
                 }
             }
         }

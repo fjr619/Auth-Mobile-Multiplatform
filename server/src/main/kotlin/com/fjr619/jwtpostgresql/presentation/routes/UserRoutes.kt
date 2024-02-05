@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.routes
 
-import data.Response
+import Response
 import com.fjr619.jwtpostgresql.domain.model.dto.UserCreateDto
 import com.fjr619.jwtpostgresql.domain.model.dto.UserLoginDto
 import com.fjr619.jwtpostgresql.domain.model.mapper.toDto

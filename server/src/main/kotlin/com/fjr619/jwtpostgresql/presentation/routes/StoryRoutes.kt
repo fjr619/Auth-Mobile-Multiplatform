@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.routes
 
-import data.Response
+import Response
 import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto

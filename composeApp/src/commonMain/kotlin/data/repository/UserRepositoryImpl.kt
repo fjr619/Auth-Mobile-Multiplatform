@@ -1,6 +1,6 @@
 package data.repository
 
-import data.Response
+import Response
 import data.mapper.toModel
 import data.model.UserDto
 import data.model.UserLoginDto
@@ -15,7 +15,8 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class UserRepositoryImpl (
+
+class UserRepositoryImpl(
     private val apiService: HttpClient
 ) : UserRepository {
     override suspend fun login(): Flow<Response<User>> {

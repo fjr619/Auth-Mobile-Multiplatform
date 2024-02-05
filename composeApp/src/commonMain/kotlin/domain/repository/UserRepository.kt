@@ -1,6 +1,6 @@
 package domain.repository
 
-import data.Response
+import Response
 import domain.model.User
 import kotlinx.coroutines.flow.Flow
 

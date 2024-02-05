@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.error
 
-import data.Response
+import Response
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall

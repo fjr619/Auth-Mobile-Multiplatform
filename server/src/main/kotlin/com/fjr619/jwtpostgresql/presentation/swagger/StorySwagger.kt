@@ -1,6 +1,6 @@
 package com.fjr619.jwtpostgresql.presentation.swagger
 
-import data.ServiceResultSerializer
+import ServiceResultSerializer
 import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryCreatedDto
 import com.fjr619.jwtpostgresql.domain.model.dto.StoryDto
