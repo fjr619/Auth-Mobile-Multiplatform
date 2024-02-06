@@ -12,7 +12,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "17"
             }
         }
     }
@@ -52,7 +52,8 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-            api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
+//            api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
+            api("dev.icerock.moko:mvvm-compose:0.16.1")
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
@@ -94,8 +95,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)

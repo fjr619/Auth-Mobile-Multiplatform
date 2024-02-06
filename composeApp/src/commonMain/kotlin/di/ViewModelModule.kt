@@ -1,10 +1,11 @@
 package di
 
+import domain.usecase.user.UserLogin
 import org.koin.dsl.module
-import ui.login.UserLoginViewModel
+import ui.auth.AuthViewModel
 
 val viewModelModule = module{
     factory {
-        UserLoginViewModel(get())
+        AuthViewModel(get())
     }
 }

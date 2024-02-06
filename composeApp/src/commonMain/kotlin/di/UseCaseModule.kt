@@ -1,10 +1,16 @@
 package di
 
-import domain.usecase.UserLoginUseCase
+import domain.repository.UserRepository
+import domain.usecase.user.UserUseCases
+import domain.usecase.user.UserLogin
+import domain.usecase.user.UserRegister
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module{
-    single {
-        UserLoginUseCase(get())
-    }
+    factory { UserLogin(get()) }
+
+    factory { UserRegister(get()) }
+
+    factory { UserUseCases(get(), get()) }
 }

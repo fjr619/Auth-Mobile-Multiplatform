@@ -6,7 +6,7 @@ import domain.repository.UserRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single<UserRepository> {
+    factory<UserRepository> {
         UserRepositoryImpl(get())
     }
 }

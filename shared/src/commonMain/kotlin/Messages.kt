@@ -1,5 +1,3 @@
-package com.fjr619.jwtpostgresql.domain.model
-
 const val USER_ALREADY_REGISTERED = "Another user exists with this email"
 const val USER_REGISTRATION_SUCCESS = "User successfully registered"
 const val USER_LOGIN_SUCCESS = "User successfully logged in"

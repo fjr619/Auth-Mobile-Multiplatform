@@ -4,6 +4,7 @@ import Response
 import data.mapper.toModel
 import domain.model.User
 import domain.repository.UserRepository
+import dto.UserCreateDto
 import dto.UserDto
 import dto.UserLoginDto
 import io.ktor.client.HttpClient
@@ -23,11 +24,40 @@ class UserRepositoryImpl(
         return flow {
             try {
                 val response = apiService.post("user/login") {
-                    contentType(ContentType.Application.Json)
                     setBody(
                         UserLoginDto(
                             email = "aaa@aaa.com",
                             password = "1234"
+                        )
+                    )
+                }
+
+                val temp: Response<UserDto> = response.body()
+                emit(
+                    Response.SuccessResponse(
+                        data = temp.data?.toModel(),
+                        token = temp.token,
+                        statusCode = temp.statusCode,
+                        message = temp.message
+                    ).toResponse()
+                )
+
+            } catch (e: Exception) {
+                emit(Response.ErrorResponse(message = e.message))
+            }
+        }
+    }
+
+    override suspend fun register(): Flow<Response<User>> {
+        return flow {
+            try {
+                val response = apiService.post("user/register") {
+                    setBody(
+                        UserCreateDto(
+                            email = "and1@aaa.com",
+                            password = "1234",
+                            fullName = "From Android",
+                            avatar = "avatar"
                         )
                     )
                 }
@@ -45,9 +75,7 @@ class UserRepositoryImpl(
                     statusCode = temp.statusCode,
                     message = temp.message
                 ).toResponse())
-
             } catch (e: Exception) {
-                println("aaa Exception")
                 emit(Response.ErrorResponse(message = e.message))
             }
         }

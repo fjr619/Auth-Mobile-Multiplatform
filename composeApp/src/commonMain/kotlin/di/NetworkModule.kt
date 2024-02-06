@@ -1,6 +1,10 @@
 package di
 
+import Response
+import domain.model.User
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -20,15 +24,16 @@ import org.koin.dsl.module
 val networkModule  = module {
     single {
         HttpClient {
+//            expectSuccess = true
             install(HttpTimeout) {
                 requestTimeoutMillis = 15_000
             }
 
             install(ContentNegotiation) {
                 json(Json {
-//                    ignoreUnknownKeys = true
+                    ignoreUnknownKeys = true
                     prettyPrint = true
-                }, contentType = ContentType.Any)
+                }, contentType = ContentType.Application.Json)
             }
 
             install(Logging) {
@@ -40,11 +45,15 @@ val networkModule  = module {
                 }
             }
 
+//            HttpResponseValidator {
+//                validateResponse { response ->
+//                    println("HttpResponseValidator $response")
+//                }
+//            }
+
             defaultRequest {
-                url {
-                    host = "192.168.68.71:8080/api"
-                    contentType(ContentType.Application.Json)
-                }
+                url("http://192.168.68.71:8080/api/")
+                contentType(ContentType.Application.Json)
             }
         }
     }

@@ -1,9 +1,8 @@
-package domain.usecase
+package domain.usecase.user
 
-import domain.model.UserLogin
 import domain.repository.UserRepository
 
-class UserLoginUseCase(
+class UserLogin(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke() = userRepository.login()

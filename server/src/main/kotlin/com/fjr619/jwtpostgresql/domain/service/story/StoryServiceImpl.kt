@@ -1,7 +1,7 @@
 package com.fjr619.jwtpostgresql.domain.service.story
 
-import com.fjr619.jwtpostgresql.domain.model.GENERIC_ERROR
-import com.fjr619.jwtpostgresql.domain.model.NOT_FOUND
+import GENERIC_ERROR
+import NOT_FOUND
 import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.RequestError
 import com.fjr619.jwtpostgresql.domain.model.entity.Story

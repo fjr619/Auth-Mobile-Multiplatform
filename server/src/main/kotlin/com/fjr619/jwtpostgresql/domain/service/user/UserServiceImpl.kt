@@ -1,11 +1,11 @@
 package com.fjr619.jwtpostgresql.domain.service.user
 
-import com.fjr619.jwtpostgresql.domain.model.GENERIC_ERROR
+import GENERIC_ERROR
 import com.fjr619.jwtpostgresql.domain.model.RequestError
-import com.fjr619.jwtpostgresql.domain.model.USER_ALREADY_REGISTERED
-import com.fjr619.jwtpostgresql.domain.model.USER_LOGIN_FAILURE
-import com.fjr619.jwtpostgresql.domain.model.USER_NOT_ADMIN
-import com.fjr619.jwtpostgresql.domain.model.NOT_FOUND
+import USER_ALREADY_REGISTERED
+import USER_LOGIN_FAILURE
+import USER_NOT_ADMIN
+import NOT_FOUND
 import com.fjr619.jwtpostgresql.domain.model.entity.User
 import dto.UserCreateDto
 import dto.UserLoginDto
