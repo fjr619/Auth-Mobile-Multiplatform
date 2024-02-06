@@ -17,7 +17,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.onFailure
 import com.github.michaelbull.result.onSuccess
-import mu.KLogger
+import io.github.oshai.kotlinlogging.KLogger
 import org.koin.core.annotation.Singleton
 
 @Singleton

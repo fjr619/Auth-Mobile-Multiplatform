@@ -7,7 +7,7 @@ import com.fjr619.jwtpostgresql.domain.model.entity.User
 import com.fjr619.jwtpostgresql.domain.repository.UserRepository
 import com.fjr619.jwtpostgresql.domain.service.security.hash.HashingService
 import com.fjr619.jwtpostgresql.domain.service.security.hash.SaltedHash
-import mu.KLogger
+import io.github.oshai.kotlinlogging.KLogger
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.statements.InsertStatement

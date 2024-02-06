@@ -8,9 +8,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule = module{
-    factory { UserLogin(get()) }
-
-    factory { UserRegister(get()) }
-
-    factory { UserUseCases(get(), get()) }
+//    factory { UserLogin(get()) }
+//
+//    factory { UserRegister(get()) }
+//
+//    factory { UserUseCases(get(), get()) }
 }

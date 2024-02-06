@@ -9,8 +9,8 @@ import com.fjr619.jwtpostgresql.domain.model.PaginatedResult
 import com.fjr619.jwtpostgresql.domain.model.entity.Story
 import com.fjr619.jwtpostgresql.domain.model.mapper.toStory
 import com.fjr619.jwtpostgresql.domain.repository.StoryRepository
+import io.github.oshai.kotlinlogging.KLogger
 import kotlinx.datetime.toJavaLocalDateTime
-import mu.KLogger
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert

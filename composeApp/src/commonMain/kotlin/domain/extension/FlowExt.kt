@@ -25,7 +25,10 @@ fun <T: Any> Flow<Response<T>>.handleResult(
         }
 
         it.data?.let { data ->
-            return@onEach onSuccess(data, it.token!!)
+            onSuccess(data, it.token!!)
+        } ?:
+            it.message?.let {
+                return@onEach onError(it)
         } ?: return@onEach onError(GENERIC_ERROR)
     }.launchIn(scope)
 

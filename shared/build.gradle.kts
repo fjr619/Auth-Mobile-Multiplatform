@@ -32,6 +32,10 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.coroutines.core)
+
+            api(libs.kotlin.logging)
+            api("org.slf4j:slf4j-android:1.7.36")
+            api("org.slf4j:slf4j-simple:2.0.9")
         }
 
         androidMain.dependencies {

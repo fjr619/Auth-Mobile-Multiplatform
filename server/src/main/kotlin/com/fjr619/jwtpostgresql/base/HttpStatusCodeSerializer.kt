@@ -7,7 +7,6 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import mu.KotlinLogging
 
 //https://dev.to/simonnystrom/adding-contextual-serialization-in-ktor-1pp8
 object HttpStatusCodeSerializer : KSerializer<HttpStatusCode> {

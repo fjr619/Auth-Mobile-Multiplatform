@@ -1,11 +1,13 @@
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.kotlinx.serialization)
+    id("com.google.devtools.ksp") version "1.9.21-1.0.15"
 }
 
 kotlin {
@@ -40,6 +42,7 @@ kotlin {
 
             implementation(libs.koin.android)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.kotlin.logging)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -52,6 +55,8 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.annotations) // Koin Annotations for KSP
+
 //            api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-18")
             api("dev.icerock.moko:mvvm-compose:0.16.1")
 
@@ -68,6 +73,30 @@ kotlin {
         }
     }
 }
+
+dependencies {
+    add("kspCommonMainMetadata", libs.koin.ksp.compiler)
+    // DO NOT add bellow dependencies
+    add("kspAndroid", libs.koin.ksp.compiler)
+    add("kspIosX64", libs.koin.ksp.compiler)
+    add("kspIosArm64", libs.koin.ksp.compiler)
+    add("kspIosSimulatorArm64", libs.koin.ksp.compiler)
+}
+
+//// WORKAROUND: ADD this dependsOn("kspCommonMainKotlinMetadata") instead of above dependencies
+//tasks.withType<KotlinCompile<*>>().configureEach {
+//    if (name != "kspCommonMainKotlinMetadata") {
+//        dependsOn("kspCommonMainKotlinMetadata")
+//    }
+//}
+//afterEvaluate {
+//    tasks.filter {
+//        it.name.contains("SourcesJar", true)
+//    }?.forEach {
+//        println("SourceJarTask====>${it.name}")
+//        it.dependsOn("kspCommonMainKotlinMetadata")
+//    }
+//}
 
 android {
     namespace = "com.fjr619.jwtpostgresql"

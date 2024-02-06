@@ -15,10 +15,12 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Factory
 
 
+@Factory
 class UserRepositoryImpl(
-    private val apiService: HttpClient
+    private val apiService: HttpClient,
 ) : UserRepository {
     override suspend fun login(): Flow<Response<User>> {
         return flow {
@@ -26,13 +28,14 @@ class UserRepositoryImpl(
                 val response = apiService.post("user/login") {
                     setBody(
                         UserLoginDto(
-                            email = "aaa@aaa.com",
+                            email = "multi@aaa.com",
                             password = "1234"
                         )
                     )
                 }
 
                 val temp: Response<UserDto> = response.body()
+                println("zzzz toResponse")
                 emit(
                     Response.SuccessResponse(
                         data = temp.data?.toModel(),
@@ -41,8 +44,8 @@ class UserRepositoryImpl(
                         message = temp.message
                     ).toResponse()
                 )
-
             } catch (e: Exception) {
+                println("zzzz Exception")
                 emit(Response.ErrorResponse(message = e.message))
             }
         }
@@ -54,9 +57,9 @@ class UserRepositoryImpl(
                 val response = apiService.post("user/register") {
                     setBody(
                         UserCreateDto(
-                            email = "and1@aaa.com",
+                            email = "multi@aaa.com",
                             password = "1234",
-                            fullName = "From Android",
+                            fullName = "From Multiplatform",
                             avatar = "avatar"
                         )
                     )
