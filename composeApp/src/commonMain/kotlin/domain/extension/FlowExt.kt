@@ -12,24 +12,24 @@ import kotlinx.coroutines.flow.onEach
 fun <T: Any> Flow<Response<T>>.handleResult(
     scope: CoroutineScope,
     onSuccess:(T, String) -> Unit,
-    onError:(message: String) -> Unit,
+    onError:(message: String, statusCode: Int) -> Unit,
     onUnAuthorized:(message: String) -> Unit
 ) {
-    onEach {
-        if (it.statusCode == HttpStatusCode.Unauthorized.value) {
+    onEach {response ->
+        if (response.statusCode == HttpStatusCode.Unauthorized.value) {
             return@onEach onUnAuthorized(INVALID_AUTHENTICATION_TOKEN)
         }
 
-        if (it is Response.ErrorResponse) {
-            return@onEach onError(it.message ?: GENERIC_ERROR)
+        if (response is Response.ErrorResponse) {
+            return@onEach onError(response.message ?: GENERIC_ERROR, response.statusCode)
         }
 
-        it.data?.let { data ->
-            onSuccess(data, it.token!!)
+        response.data?.let { data ->
+            onSuccess(data, response.token!!)
         } ?:
-            it.message?.let {
-                return@onEach onError(it)
-        } ?: return@onEach onError(GENERIC_ERROR)
+        response.message?.let {message ->
+                return@onEach onError(message, response.statusCode)
+        } ?: return@onEach onError(GENERIC_ERROR, response.statusCode)
     }.launchIn(scope)
 
 }

@@ -4,6 +4,7 @@ import Response
 import domain.model.User
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -24,7 +25,7 @@ import org.koin.dsl.module
 val networkModule  = module {
     single {
         HttpClient {
-//            expectSuccess = true
+            expectSuccess = true
             install(HttpTimeout) {
                 requestTimeoutMillis = 15_000
             }
@@ -45,11 +46,16 @@ val networkModule  = module {
                 }
             }
 
-//            HttpResponseValidator {
-//                validateResponse { response ->
-//                    println("HttpResponseValidator $response")
-//                }
-//            }
+            HttpResponseValidator {
+                handleResponseExceptionWithRequest { exception, request ->
+                    when(exception) {
+                        is ClientRequestException -> {
+                            val a = exception.response.body<Response<Nothing>>()
+                            throw RequestException(statusCode = a.statusCode, message = a.message)
+                        }
+                    }
+                }
+            }
 
             defaultRequest {
                 url("http://192.168.68.71:8080/api/")
@@ -58,3 +64,5 @@ val networkModule  = module {
         }
     }
 }
+
+class RequestException (override val message: String?, val statusCode: Int) : Exception(message)

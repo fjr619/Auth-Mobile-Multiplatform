@@ -2,13 +2,16 @@ package data.repository
 
 import Response
 import data.mapper.toModel
+import di.RequestException
 import domain.model.User
 import domain.repository.UserRepository
 import dto.UserCreateDto
 import dto.UserDto
 import dto.UserLoginDto
+import io.github.oshai.kotlinlogging.KLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -21,6 +24,7 @@ import org.koin.core.annotation.Factory
 @Factory
 class UserRepositoryImpl(
     private val apiService: HttpClient,
+    private val logger: KLogger
 ) : UserRepository {
     override suspend fun login(): Flow<Response<User>> {
         return flow {
@@ -28,14 +32,14 @@ class UserRepositoryImpl(
                 val response = apiService.post("user/login") {
                     setBody(
                         UserLoginDto(
-                            email = "multi@aaa.com",
+                            email = "multi1@aaa.com",
                             password = "1234"
                         )
                     )
                 }
 
                 val temp: Response<UserDto> = response.body()
-                println("zzzz toResponse")
+                logger.info {"zzzz SuccessResponse"}
                 emit(
                     Response.SuccessResponse(
                         data = temp.data?.toModel(),
@@ -44,9 +48,9 @@ class UserRepositoryImpl(
                         message = temp.message
                     ).toResponse()
                 )
-            } catch (e: Exception) {
-                println("zzzz Exception")
-                emit(Response.ErrorResponse(message = e.message))
+            } catch (e: RequestException) {
+                logger.info {"zzzz ErrorResponse ${e.message} ${e.statusCode}"}
+                emit(Response.ErrorResponse(message = e.message, statusCode = e.statusCode))
             }
         }
     }
@@ -78,8 +82,9 @@ class UserRepositoryImpl(
                     statusCode = temp.statusCode,
                     message = temp.message
                 ).toResponse())
-            } catch (e: Exception) {
-                emit(Response.ErrorResponse(message = e.message))
+            } catch (e: RequestException) {
+                logger.info{"zzzz Exception $e.message"}
+                emit(Response.ErrorResponse(message = e.message, statusCode = e.statusCode))
             }
         }
     }

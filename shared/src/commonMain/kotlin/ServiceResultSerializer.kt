@@ -1,3 +1,4 @@
+import io.github.oshai.kotlinlogging.KLogger
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -7,13 +8,16 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 //https://stackoverflow.com/a/71860558
 class ServiceResultSerializer<T : Any>(
     tSerializer: KSerializer<T>
-) : KSerializer<Response<T>> {
+) : KSerializer<Response<T>>, KoinComponent {
 
 //    val logger = KoinJavaComponent.inject<KLogger>(KLogger::class.java).value
+    val logger: KLogger by inject()
 
     @Serializable
     @SerialName("BaseResponse")
@@ -37,6 +41,7 @@ class ServiceResultSerializer<T : Any>(
     override val descriptor: SerialDescriptor = surrogateSerializer.descriptor
 
     override fun deserialize(decoder: Decoder): Response<T> {
+        logger.info { "deserialize" }
         val surrogate = surrogateSerializer.deserialize(decoder)
         return when (surrogate.type) {
             Response.Type.SUCCESS ->
@@ -62,6 +67,7 @@ class ServiceResultSerializer<T : Any>(
     }
 
     override fun serialize(encoder: Encoder, value: Response<T>) {
+        logger.info { "serialize" }
         val surrogate = when (value) {
             is Response.ErrorResponse -> {
                 ServiceResultSurrogate(
